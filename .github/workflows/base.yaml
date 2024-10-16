@@ -9,7 +9,7 @@ env:
     LATEST_TAG: latest
     SCRATCH_NAME: scratch
     VALKEY_NAME: valkey
-    OWNER: ghcr.io/960018/
+    OWNER: ghcr.io/960018
     EVENT: base
 
 jobs:
