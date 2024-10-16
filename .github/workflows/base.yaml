@@ -8,7 +8,7 @@ on:
 env:
     LATEST_TAG: latest
     SCRATCH_NAME: scratch
-    VALKEY_NAME: valkey
+    VALKEY_BASE_NAME: valkey-base
     OWNER: ghcr.io/960018
     EVENT: base
 
@@ -52,13 +52,13 @@ jobs:
                 uses: docker/build-push-action@v6
                 with:
                     context: .
-                    file: ${{ env.VALKEY_NAME }}.dockerfile
+                    file: ${{ env.VALKEY_BASE_NAME }}.dockerfile
                     platforms: linux/${{ matrix.arch }}
                     push: true
                     no-cache: true
                     provenance: true
                     sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.VALKEY_NAME }}:${{ matrix.arch }}
+                    tags: ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -83,7 +83,7 @@ jobs:
             -   name: multiarch
                 run: |
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:amd64 ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ env.LATEST_TAG }}
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.VALKEY_NAME }}:amd64 ${{ env.OWNER }}/${{ env.VALKEY_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.VALKEY_NAME }}:${{ env.LATEST_TAG }}
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:amd64 ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:
