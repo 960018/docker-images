@@ -74,3 +74,21 @@ jobs:
                     event-type: scratch-amd64
                     token: ${{ secrets.GH_TOKEN }}
                     repository: 960018/docker-images
+
+    multiarch:
+        runs-on: ubuntu-24.04
+        needs: [build-arm, build-amd]
+        steps:
+            -   name: login
+                uses: docker/login-action@v2
+                with:
+                    registry: ghcr.io
+                    username: ${{ github.repository_owner }}
+                    password: ${{ secrets.GH_TOKEN }}
+            -   name: buildkit
+                uses: docker/setup-buildx-action@v2
+                with:
+                    driver-opts: image=moby/buildkit:master-rootless
+            -   name: multiarch
+                run: |
+                    docker buildx imagetools create ghcr.io/960018/scratch:amd64 ghcr.io/960018/scratch:arm64 --tag ghcr.io/960018/scratch:latest
