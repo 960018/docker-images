@@ -1,15 +1,14 @@
-name: build base images
+name: build dependants
 
 on:
-    push:
-        branches:
-            - "master"
+    repository_dispatch:
+        types: [base]
 
 env:
-    EVENT: base
+    BUN_NAME: bun
+    EVENT: dependants
     LATEST_TAG: latest
     OWNER: ghcr.io/960018
-    SCRATCH_NAME: scratch
 
 jobs:
 
@@ -25,27 +24,27 @@ jobs:
                         runs-on: self-arm64
         steps:
             -   name: login
-                uses: docker/login-action@v3
+                uses: docker/login-action@v2
                 with:
                     registry: ghcr.io
                     username: ${{ github.repository_owner }}
                     password: ${{ secrets.GH_TOKEN }}
             -   name: checkout
-                uses: actions/checkout@v4
+                uses: actions/checkout@v3
             -   name: buildkit
-                uses: docker/setup-buildx-action@v3
+                uses: docker/setup-buildx-action@v2
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
-            -   name: build scratch
-                uses: docker/build-push-action@v6
+            -   name: build
+                uses: docker/build-push-action@v3
                 with:
                     context: .
-                    file: ${{ env.SCRATCH_NAME }}.dockerfile
+                    file: ${{ env.BUN_NAME }}.dockerfile
                     push: true
                     no-cache: true
                     provenance: true
                     sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ matrix.arch }}
+                    tags: ${{ env.OWNER }}/${{ env.BUN_NAME }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -58,18 +57,18 @@ jobs:
         needs: [build]
         steps:
             -   name: login
-                uses: docker/login-action@v3
+                uses: docker/login-action@v2
                 with:
                     registry: ghcr.io
                     username: ${{ github.repository_owner }}
                     password: ${{ secrets.GH_TOKEN }}
             -   name: buildkit
-                uses: docker/setup-buildx-action@v3
+                uses: docker/setup-buildx-action@v2
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:amd64 ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ env.LATEST_TAG }}
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.BUN_NAME }}:amd64 ${{ env.OWNER }}/${{ env.BUN_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.BUN_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:
