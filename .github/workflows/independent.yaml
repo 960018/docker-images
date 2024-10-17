@@ -1,4 +1,4 @@
-name: build base images
+name: build independent images
 
 on:
     push:
@@ -6,11 +6,13 @@ on:
             - "master"
 
 env:
-    EVENT: base
+    EVENT: independent
     LATEST_TAG: latest
     OWNER: ghcr.io/960018
     SCRATCH_NAME: scratch
     VALKEY_BASE_NAME: valkey-base
+    POSTGRES_NAME: postgres
+    POSTGRES_VERSIONS: "13 14 15 16 17"
 
 jobs:
 
@@ -57,6 +59,19 @@ jobs:
                     provenance: true
                     sbom: true
                     tags: ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:${{ matrix.arch }}
+            -   name: build postgres
+                run: |
+                    for version in ${{ env.POSTGRES_VERSIONS }}; do
+                        docker buildx build \
+                            --file ${{ env.POSTGRES_NAME }}.dockerfile \
+                            --push \
+                            --no-cache \
+                            --provenance \
+                            --sbom \
+                            --build-arg VERSION=${version}
+                            --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-${{ matrix.arch }} \
+                        .
+                    done
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -82,6 +97,9 @@ jobs:
                 run: |
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:amd64 ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ env.LATEST_TAG }}
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:amd64 ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:${{ env.LATEST_TAG }}
+                    for version in ${{ env.POSTGRES_VERSIONS }}; do
+                        docker buildx imagetools create ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-amd64 ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-arm64 --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}
+                    done
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:
