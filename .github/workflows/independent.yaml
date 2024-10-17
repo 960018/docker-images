@@ -68,9 +68,9 @@ jobs:
                             --no-cache \
                             --provenance \
                             --sbom \
-                            --build-arg VERSION=${version}
+                            --build-arg VERSION=${version} \
                             --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-${{ matrix.arch }} \
-                        .
+                            .
                     done
             -   name: cleanup
                 run: |
