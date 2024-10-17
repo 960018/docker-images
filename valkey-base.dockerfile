@@ -5,18 +5,25 @@ RUN set -eux; \
 	groupadd -r -g 999 valkey; \
 	useradd -r -g valkey -u 999 valkey
 
+COPY    global/01_nodoc  /etc/dpkg/dpkg.cfg.d/01_nodoc
+COPY    global/02_nocache /etc/apt/apt.conf.d/02_nocache
+COPY    global/compress  /etc/initramfs-tools/conf.d/compress
+COPY    global/modules   /etc/initramfs-tools/conf.d/modules
+COPY    global/90parallel   /etc/apt/apt.conf.d/90parallel
+
 # runtime dependencies
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 # add tzdata explicitly for https://github.com/docker-library/valkey/issues/138 (see also https://bugs.debian.org/837060 and related)
 		tzdata \
+        setpriv \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-ENV VALKEY_VERSION unstable
-ENV VALKEY_DOWNLOAD_URL https://github.com/valkey-io/valkey/archive/unstable.tar.gz
-ENV VALKEY_DOWNLOAD_SHA 0000000000000000000000000000000000000000000000000000000000000000
+ENV VALKEY_VERSION="unstable"
+ENV VALKEY_DOWNLOAD_URL="https://github.com/valkey-io/valkey/archive/unstable.tar.gz"
+ENV VALKEY_DOWNLOAD_SHA="0000000000000000000000000000000000000000000000000000000000000000"
 
 RUN set -eux; \
 	\
