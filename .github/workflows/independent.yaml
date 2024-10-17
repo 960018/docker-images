@@ -66,8 +66,8 @@ jobs:
                             --file ${{ env.POSTGRES_NAME }}.dockerfile \
                             --push \
                             --no-cache \
-                            --provenance \
-                            --sbom \
+                            --provenance=true \
+                            --sbom=true \
                             --build-arg VERSION=${version} \
                             --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-${{ matrix.arch }} \
                             .
