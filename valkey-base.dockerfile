@@ -116,7 +116,7 @@ RUN     \
 
 RUN     \
         set -eux; \
-        mkdir /data && chown valkey:valkey /data \
+        mkdir /data && chown valkey:valkey /data
 
 VOLUME  /data
 WORKDIR /data
@@ -125,7 +125,7 @@ COPY    valkey/docker-entrypoint.sh /usr/local/bin/
 
 RUN     \
         set -eux; \
-        chmod +x /usr/local/bin/docker-entrypoint.sh \
+        chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
