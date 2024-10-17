@@ -13,15 +13,15 @@ env:
 jobs:
 
     build:
-        runs-on: ubuntu-latest
         strategy:
             matrix:
                 arch: [amd64, arm64]
                 include:
                     -   arch: amd64
-                        runs-on: self-amd64
+                        os: self-amd64
                     -   arch: arm64
-                        runs-on: self-arm64
+                        os: self-arm64
+        runs-on: ${{ matrix.os }}
         steps:
             -   name: login
                 uses: docker/login-action@v2
