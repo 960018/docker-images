@@ -9,6 +9,7 @@ env:
     EVENT: dependants
     LATEST_TAG: latest
     OWNER: ghcr.io/960018
+    NGINX_NAME: nginx
 
 jobs:
 
@@ -35,7 +36,7 @@ jobs:
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
-            -   name: build
+            -   name: build bun
                 uses: docker/build-push-action@v6
                 with:
                     context: .
@@ -45,6 +46,16 @@ jobs:
                     provenance: true
                     sbom: true
                     tags: ${{ env.OWNER }}/${{ env.BUN_NAME }}:${{ matrix.arch }}
+            -   name: build nginx
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.NGINX_NAME }}.dockerfile
+                    push: true
+                    no-cache: true
+                    provenance: true
+                    sbom: true
+                    tags: ${{ env.OWNER }}/${{ env.NGINX_NAME }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -69,6 +80,7 @@ jobs:
             -   name: multiarch
                 run: |
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.BUN_NAME }}:amd64 ${{ env.OWNER }}/${{ env.BUN_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.BUN_NAME }}:${{ env.LATEST_TAG }}
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.NGINX_NAME }}:amd64 ${{ env.OWNER }}/${{ env.NGINX_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.NGINX_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:
