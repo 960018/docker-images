@@ -121,11 +121,7 @@ RUN     \
 VOLUME  /data
 WORKDIR /data
 
-COPY    valkey/docker-entrypoint.sh /usr/local/bin/
-
-RUN     \
-        set -eux; \
-        chmod +x /usr/local/bin/docker-entrypoint.sh
+COPY    --chmod=0755 valkey/docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
