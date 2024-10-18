@@ -5,11 +5,15 @@ on:
         types: [independent]
 
 env:
+    BUILDS: "bun nginx node"
     BUN_NAME: bun
     EVENT: dependants
     LATEST_TAG: latest
-    OWNER: ghcr.io/960018
     NGINX_NAME: nginx
+    NODE_NAME: node
+    NODE_VERSION: 23.0.0
+    OWNER: ghcr.io/960018
+    YARN_VERSION: 1.22.22
 
 jobs:
 
@@ -56,6 +60,19 @@ jobs:
                     provenance: true
                     sbom: true
                     tags: ${{ env.OWNER }}/${{ env.NGINX_NAME }}:${{ matrix.arch }}
+            -   name: build node
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.NODE_NAME }}.dockerfile
+                    push: true
+                    no-cache: true
+                    provenance: true
+                    sbom: true
+                    build-args: |
+                        VERSION=${{ env.NODE_VERSION }}
+                        YARN_VERSION=${{ env.YARN_VERSION }}
+                    tags: ${{ env.OWNER }}/${{ env.NODE_NAME }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -79,8 +96,9 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.BUN_NAME }}:amd64 ${{ env.OWNER }}/${{ env.BUN_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.BUN_NAME }}:${{ env.LATEST_TAG }}
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.NGINX_NAME }}:amd64 ${{ env.OWNER }}/${{ env.NGINX_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.NGINX_NAME }}:${{ env.LATEST_TAG }}
+                    for build_name in ${{ env.BUILDS }}; do
+                        docker buildx imagetools create ${{ env.OWNER }}/${build_name}:amd64 ${{ env.OWNER }}/${build_name}:arm64 --tag ${{ env.OWNER }}/${build_name}:${{ env.LATEST_TAG }}
+                    done
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:
