@@ -5,11 +5,10 @@ on:
         types: [independent]
 
 env:
-    BUILDS: "bun nginx node"
-    BUN_NAME: bun
+    BUILDS: "bun nginx node cron"
+    SIMILAR: "bun nginx cron"
     EVENT: dependants
     LATEST_TAG: latest
-    NGINX_NAME: nginx
     NODE_NAME: node
     NODE_VERSION: 23.0.0
     OWNER: ghcr.io/960018
@@ -40,26 +39,6 @@ jobs:
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
-            -   name: build bun
-                uses: docker/build-push-action@v6
-                with:
-                    context: .
-                    file: ${{ env.BUN_NAME }}.dockerfile
-                    push: true
-                    no-cache: true
-                    provenance: true
-                    sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.BUN_NAME }}:${{ matrix.arch }}
-            -   name: build nginx
-                uses: docker/build-push-action@v6
-                with:
-                    context: .
-                    file: ${{ env.NGINX_NAME }}.dockerfile
-                    push: true
-                    no-cache: true
-                    provenance: true
-                    sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.NGINX_NAME }}:${{ matrix.arch }}
             -   name: build node
                 uses: docker/build-push-action@v6
                 with:
@@ -73,6 +52,18 @@ jobs:
                         VERSION=${{ env.NODE_VERSION }}
                         YARN_VERSION=${{ env.YARN_VERSION }}
                     tags: ${{ env.OWNER }}/${{ env.NODE_NAME }}:${{ matrix.arch }}
+            -   name: build similar
+                run: |
+                    for build_name in ${{ env.SIMILAR }}; do
+                        docker buildx build \
+                            --file ${build_name}.dockerfile \
+                            --push \
+                            --no-cache \
+                            --provenance=true \
+                            --sbom=true \
+                            --tag ${{ env.OWNER }}/${build_name}:${{ matrix.arch }} \
+                            .
+                    done
             -   name: cleanup
                 run: |
                     ls -la ./

@@ -1,4 +1,4 @@
 *
+!postgres
+!global
 !postgres.dockerfile
-!postgres/*
-!global/*

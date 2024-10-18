@@ -47,7 +47,8 @@ RUN     \
             /root/.npm \
             /root/.cache \
 &&      usermod -a -G dialout vairogs \
-&&      npm i -g npm@next-10
+&&      npm i -g npm@next-10 \
+&&      npm i -g n@latest
 
 USER    vairogs
 
