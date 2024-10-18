@@ -10,7 +10,6 @@ env:
     LATEST_TAG: latest
     OWNER: ghcr.io/960018
     SCRATCH_NAME: scratch
-    VALKEY_BASE_NAME: valkey-base
     POSTGRES_NAME: postgres
     POSTGRES_VERSIONS: "13 14 15 16 17"
 
@@ -49,16 +48,6 @@ jobs:
                     provenance: true
                     sbom: true
                     tags: ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ matrix.arch }}
-            -   name: build valkey-base
-                uses: docker/build-push-action@v6
-                with:
-                    context: .
-                    file: ${{ env.VALKEY_BASE_NAME }}.dockerfile
-                    push: true
-                    no-cache: true
-                    provenance: true
-                    sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:${{ matrix.arch }}
             -   name: build postgres
                 run: |
                     for version in ${{ env.POSTGRES_VERSIONS }}; do
@@ -96,7 +85,6 @@ jobs:
             -   name: multiarch
                 run: |
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:amd64 ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ env.LATEST_TAG }}
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:amd64 ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.VALKEY_BASE_NAME }}:${{ env.LATEST_TAG }}
                     for version in ${{ env.POSTGRES_VERSIONS }}; do
                         docker buildx imagetools create ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-amd64 ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-arm64 --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}
                     done
