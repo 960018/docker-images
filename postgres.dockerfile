@@ -36,3 +36,7 @@ RUN     \
 COPY    --chmod=0755 postgres/pg_backup.config /backup/scripts/pg_backup.config
 COPY    --chmod=0755 postgres/pg_backup_rotated.sh /backup/scripts/pg_backup_rotated.sh
 COPY    --chmod=0755 postgres/init.sh /docker-entrypoint-initdb.d/init.sh
+COPY    --chmod=0755 postgres/custom-entrypoint.sh /usr/local/bin/custom-entrypoint.sh
+COPY    --chmod=0755 postgres/install_extensions.sql /install_extensions.sql
+
+ENTRYPOINT ["/usr/local/bin/custom-entrypoint.sh"]
