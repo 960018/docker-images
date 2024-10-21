@@ -1,11 +1,11 @@
-name: build php-fpm base
+name: build php-fpm
 
 on:
     repository_dispatch:
-        types: [curl]
+        types: [php-fpm-base]
 
 env:
-    EVENT: php-fpm-base
+    EVENT: php-fpm
     LATEST_TAG: latest
     PHP_NAME: php-fpm
     OWNER: ghcr.io/960018
@@ -46,16 +46,34 @@ jobs:
                         cd ../..
                     }
                     clone_repo php https://github.com/php/php-src.git source
-            -   name: build php-fpm base
+                    clone_repo php https://github.com/fork-php/apcu.git apcu
+                    clone_repo php https://github.com/fork-php/ext-ds.git ext-ds
+                    clone_repo php https://github.com/fork-php/igbinary.git igbinary
+                    clone_repo php https://github.com/fork-php/imagick.git imagick
+                    clone_repo php https://github.com/fork-php/mediawiki-php-excimer.git mediawiki-php-excimer
+                    clone_repo php https://github.com/fork-php/msgpack-php.git msgpack-php
+                    clone_repo php https://github.com/fork-php/pecl-ev.git pecl-ev
+                    clone_repo php https://github.com/fork-php/pecl-event.git pecl-event
+                    clone_repo php https://github.com/fork-php/pecl-file_formats-lzf.git pecl-file_formats-lzf
+                    clone_repo php https://github.com/fork-php/pecl-networking-uuid.git pecl-networking-uuid
+                    clone_repo php https://github.com/fork-php/php-ext-lz4.git php-ext-lz4
+                    clone_repo php https://github.com/fork-php/php-ext-zstd.git php-ext-zstd
+                    clone_repo php https://github.com/fork-php/php-inotify.git php-inotify
+                    clone_repo php https://github.com/fork-php/php-spx.git php-spx
+                    clone_repo php https://github.com/fork-php/php_zip.git php_zip
+                    clone_repo php https://github.com/fork-php/phpiredis.git phpiredis
+                    clone_repo php https://github.com/fork-php/phpredis.git phpredis
+                    clone_repo php https://github.com/fork-php/simdjson_php.git simdjson_php
+            -   name: build php-fpm
                 uses: docker/build-push-action@v6
                 with:
                     context: .
-                    file: ${{ env.PHP_NAME }}-base.dockerfile
+                    file: ${{ env.PHP_NAME }}.dockerfile
                     push: true
                     no-cache: true
                     provenance: true
                     sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-base
+                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -79,7 +97,7 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless,debug=false
             -   name: multiarch
                 run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-base ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-base --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-base
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64 ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:
