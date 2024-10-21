@@ -17,19 +17,21 @@ function bool(
 }
 
 if ('cli' !== PHP_SAPI && bool($_ENV['ENABLE_PRELOAD'] ?? true)) {
-    if ('prod' === ($_ENV['APP_ENV'] ?? null) && null === ($_ENV['PRELOAD_FILE'] ?? null)) {
-        $prefix = '/var/www/html';
-        $path = '/var/cache/prod/';
-        $filename = 'App_KernelProdContainer.preload.php';
+    if (null === ($_ENV['PRELOAD_FILE'] ?? null)) {
+        if ('prod' === ($_ENV['APP_ENV'] ?? null)) {
+            $prefix = '/var/www/html';
+            $path = '/var/cache/prod/';
+            $filename = 'App_KernelProdContainer.preload.php';
 
-        if (!is_dir($long = $prefix . '/api' . $path)) {
-            $long = null;
-        }
+            if (!is_dir($long = $prefix . '/api' . $path)) {
+                $long = null;
+            }
 
-        $dir = $_ENV['PRELOAD_DIR'] ?? (is_dir($short = $prefix . $path) ? $short : $long);
+            $dir = $_ENV['PRELOAD_DIR'] ?? (is_dir($short = $prefix . $path) ? $short : $long);
 
-        if (null !== $dir && file_exists($dir . $path)) {
-            opcache_compile_file($dir . $path);
+            if (null !== $dir && file_exists($dir . $path . $filename)) {
+                opcache_compile_file($dir . $path . $filename);
+            }
         }
     } else {
         opcache_compile_file($_ENV['PRELOAD_FILE']);
