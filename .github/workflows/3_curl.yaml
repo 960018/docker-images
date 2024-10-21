@@ -1,4 +1,5 @@
 name: build curl
+run-name: build curl
 
 on:
     repository_dispatch:

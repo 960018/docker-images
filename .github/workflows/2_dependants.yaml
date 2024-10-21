@@ -1,4 +1,5 @@
 name: build dependants
+run-name: build dependants
 
 on:
     repository_dispatch:

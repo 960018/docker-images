@@ -1,4 +1,5 @@
 name: build independent images
+run-name: build independent images
 
 on:
     push:

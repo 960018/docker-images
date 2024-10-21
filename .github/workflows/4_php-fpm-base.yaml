@@ -1,4 +1,5 @@
 name: build php-fpm base
+run-name: build php-fpm base
 
 on:
     repository_dispatch:
