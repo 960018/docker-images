@@ -8,6 +8,7 @@ env:
     EVENT: curl
     LATEST_TAG: latest
     CURL_NAME: curl
+    OWNER: ghcr.io/960018
 
 jobs:
 
