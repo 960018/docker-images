@@ -1,18 +1,13 @@
-name: build dependants
+name: build curl
 
 on:
     repository_dispatch:
-        types: [independent]
+        types: [dependants]
 
 env:
-    BUILDS: "bun nginx node cron"
-    SIMILAR: "bun nginx cron"
-    EVENT: dependants
+    EVENT: curl
     LATEST_TAG: latest
-    NODE_NAME: node
-    NODE_VERSION: 23.0.0
-    OWNER: ghcr.io/960018
-    YARN_VERSION: 1.22.22
+    CURL_NAME: curl
 
 jobs:
 
@@ -39,31 +34,33 @@ jobs:
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
-            -   name: build node
+            -   name: mkdir
+                run: |
+                    mkdir -m 755 --parents curl
+            -   name: clone
+                run: |
+                    clone_repo() {
+                        cd $1
+                        git clone --single-branch $2 $3
+                        cd $3
+                        git submodule update --init --force
+                        rm -rf .git .github
+                        cd ../..
+                    }
+                    clone_repo curl https://github.com/curl/curl.git source
+                    clone_repo curl https://github.com/ngtcp2/nghttp3.git nghttp3
+                    clone_repo curl https://github.com/ngtcp2/ngtcp2.git ngtcp2
+                    clone_repo curl https://github.com/wolfSSL/wolfssl.git wolfssl
+            -   name: build curl
                 uses: docker/build-push-action@v6
                 with:
                     context: .
-                    file: ${{ env.NODE_NAME }}.dockerfile
+                    file: ${{ env.CURL_NAME }}.dockerfile
                     push: true
                     no-cache: true
                     provenance: true
                     sbom: true
-                    build-args: |
-                        VERSION=${{ env.NODE_VERSION }}
-                        YARN_VERSION=${{ env.YARN_VERSION }}
-                    tags: ${{ env.OWNER }}/${{ env.NODE_NAME }}:${{ matrix.arch }}
-            -   name: build similar
-                run: |
-                    for build_name in ${{ env.SIMILAR }}; do
-                        docker buildx build \
-                            --file ${build_name}.dockerfile \
-                            --push \
-                            --no-cache \
-                            --provenance=true \
-                            --sbom=true \
-                            --tag ${{ env.OWNER }}/${build_name}:${{ matrix.arch }} \
-                            .
-                    done
+                    tags: ${{ env.OWNER }}/${{ env.CURL_NAME }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -73,7 +70,7 @@ jobs:
 
     multiarch:
         runs-on: self-amd64
-        needs: [build]
+        needs: [ build ]
         steps:
             -   name: login
                 uses: docker/login-action@v3
@@ -87,9 +84,7 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
-                    for build_name in ${{ env.BUILDS }}; do
-                        docker buildx imagetools create ${{ env.OWNER }}/${build_name}:amd64 ${{ env.OWNER }}/${build_name}:arm64 --tag ${{ env.OWNER }}/${build_name}:${{ env.LATEST_TAG }}
-                    done
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.CURL_NAME }}:amd64 ${{ env.OWNER }}/${{ env.CURL_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.CURL_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:
