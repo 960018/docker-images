@@ -1,0 +1,181 @@
+FROM    ghcr.io/960018/curl:latest AS builder
+
+USER    root
+
+ENV     PHP_VERSION=8.5.0-dev
+ENV     PHP_INI_DIR=/usr/local/etc/php
+ENV     PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native"
+ENV     PHP_CPPFLAGS="$PHP_CFLAGS"
+ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
+ENV     PHP_CS_FIXER_IGNORE_ENV=1
+
+COPY    php/no-debian-php /etc/apt/preferences.d/no-debian-php
+COPY    php/source/          /usr/src/php
+
+COPY    php/docker/docker-php-entrypoint    /usr/local/bin/docker-php-entrypoint
+COPY    php/docker/docker-php-ext-configure /usr/local/bin/docker-php-ext-configure
+COPY    php/docker/docker-php-ext-enable    /usr/local/bin/docker-php-ext-enable
+COPY    php/docker/docker-php-ext-install   /usr/local/bin/docker-php-ext-install
+COPY    php/docker/docker-php-source        /usr/local/bin/docker-php-source
+
+ENTRYPOINT ["docker-php-entrypoint"]
+
+STOPSIGNAL SIGQUIT
+
+WORKDIR /home/vairogs
+
+RUN     \
+        set -eux \
+&&      apt-get update \
+&&      apt-get upgrade -y \
+&&      apt-get install -y --no-install-recommends --allow-downgrades make libc-dev libc6-dev gcc g++ cpp git dpkg-dev autoconf jq wget \
+&&      apt-get install -y --no-install-recommends --allow-downgrades bison re2c valgrind libxml2 libssl3t64 libsqlite3-0 libbz2-1.0 libidn2-0 gdb-minimal \
+        zstd libbrotli1 libpsl5t64 libgsasl18 rtmpdump librtmp1 libnghttp3-9 nghttp2 libonig5 libpq5 libsodium23 libargon2-1 libtidy58 libfcgi-bin \
+        libzip4t64 libgmp10 zlib1g libffi8 \
+&&      apt-get install -y --no-install-recommends --allow-downgrades libxml2-dev libssl-dev libsqlite3-dev libbz2-dev libidn2-dev libzstd-dev \
+        libbrotli-dev libpsl-dev libgsasl-dev librtmp-dev libnghttp2-dev libnghttp3-dev libonig-dev libpq-dev libsodium-dev libargon2-dev libtidy-dev \
+        libzip-dev libgmp-dev zlib1g-dev libffi-dev \
+&&      chmod -R 1777 /usr/local/bin \
+&&      mkdir --parents "$PHP_INI_DIR/conf.d" \
+&&      [ ! -d /var/www/html ]; \
+        mkdir --parents /var/www/html \
+&&      chown vairogs:vairogs /var/www/html \
+&&      chmod 1777 -R /var/www/html \
+&&      export \
+            CFLAGS="$PHP_CFLAGS" \
+            CPPFLAGS="$PHP_CPPFLAGS" \
+            LDFLAGS="$PHP_LDFLAGS" \
+&&      cd /usr/src/php \
+&&      gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
+&&      ./buildconf --force \
+&&      ./configure \
+            --build="${gnuArch}" \
+            --with-config-file-path="$PHP_INI_DIR" \
+            --with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
+            --disable-cgi \
+            --disable-ftp \
+            --disable-short-tags \
+            --disable-mysqlnd \
+            --disable-phpdbg \
+            --enable-bcmath \
+            --enable-calendar \
+            --enable-exif \
+            --enable-fpm \
+            --enable-huge-code-pages \
+            --enable-intl \
+            --enable-mbstring \
+            --enable-opcache \
+            --enable-option-checking=fatal \
+            --enable-sysvsem \
+            --enable-sysvshm \
+            --enable-sysvmsg \
+            --enable-shmop \
+            --enable-soap \
+            --enable-sockets \
+            --with-bz2 \
+            --with-curl \
+            --with-ffi \
+            --with-fpm-group=vairogs \
+            --with-fpm-user=vairogs \
+            --with-gmp \
+            --with-openssl \
+            --with-password-argon2 \
+            --with-pear \
+            --with-pic \
+            --with-pdo-pgsql \
+            --with-pdo-sqlite=/usr \
+            --with-sodium=shared \
+            --with-sqlite3=/usr \
+            --with-tidy \
+            --with-valgrind \
+            --without-readline \
+&&      make \
+&&      find -type f -name '*.a' -delete \
+&&      make install \
+&&      find /usr/local -type f -perm '/0111' -exec sh -euxc ' strip --strip-all "$@" || : ' -- '{}' + \
+&&      make clean \
+&&      mkdir --parents "$PHP_INI_DIR" \
+&&      cp -v php.ini-* "$PHP_INI_DIR/" \
+&&      cd / \
+&&      pecl update-channels \
+&&      rm -rf \
+            /tmp/pear \
+            ~/.pearrc \
+&&      php --version \
+&&      mkdir --parents "$PHP_INI_DIR/conf.d" \
+&&      chmod -R 1777 /usr/local/bin \
+&&      mkdir --parents --mode=777 --verbose /run/php-fpm \
+&&      touch /run/php-fpm/.keep_dir \
+&&      wget -O /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck \
+&&      chmod +x /usr/local/bin/php-fpm-healthcheck \
+&&      chown www-data:www-data /usr/local/bin/php-fpm-healthcheck \
+&&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false make libc-dev libc6-dev cpp gcc g++ autoconf dpkg-dev \
+&&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false libxml2-dev libssl-dev libsqlite3-dev libbz2-dev libidn2-dev \
+        libzstd-dev libbrotli-dev libpsl-dev libgsasl-dev librtmp-dev libnghttp2-dev libnghttp3-dev libonig-dev libpq-dev libsodium-dev \
+        libargon2-dev libtidy-dev libzip-dev libgmp-dev zlib1g-dev libffi-dev \
+&&      mkdir --parents /var/lib/php/sessions \
+&&      chown -R vairogs:vairogs /var/lib/php/sessions \
+&&      mkdir --parents /var/lib/php/opcache \
+&&      chown -R vairogs:vairogs /var/lib/php/opcache \
+&&      rm -rf \
+            ~/.pearrc \
+            /home/vairogs/*.deb \
+            /home/vairogs/*.gz \
+            /*.deb \
+            /tmp/* \
+            /usr/local/bin/docker-php-ext-configure \
+            /usr/local/bin/docker-php-ext-enable \
+            /usr/local/bin/docker-php-ext-install \
+            /usr/local/bin/docker-php-source \
+            /usr/local/bin/phpdbg \
+            /usr/local/etc/php-fpm.conf \
+            /usr/local/etc/php-fpm.d/* \
+            /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini \
+            /usr/local/etc/php/php.ini \
+            /usr/local/php/man/* \
+            /usr/src/php \
+            /var/cache/* \
+            /usr/share/vim/vim90/doc \
+            /usr/local/bin/install-php-extensions \
+            /usr/share/man/* \
+&&      mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+
+COPY    php/ini/php-fpm.conf /usr/local/etc/php-fpm.conf
+COPY    php/ini/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY    php/ini/zz.ini /usr/local/etc/php/conf.d/zz.ini
+COPY    php/ini/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+COPY    php/preload.php /var/www/preload.php
+
+RUN     \
+        set -eux \
+&&      chmod 644 /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini \
+&&      git config --global --add safe.directory "*" \
+&&      chown -R vairogs:vairogs /home/vairogs \
+&&      chown vairogs:vairogs /var/www/preload.php
+
+WORKDIR /var/www/html
+
+USER    vairogs
+
+CMD     ["php-fpm"]
+
+FROM    ghcr.io/960018/scratch:latest
+
+COPY    --from=builder / /
+
+ENV     PHP_VERSION=8.5.0-dev
+ENV     PHP_INI_DIR=/usr/local/etc/php
+ENV     PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native"
+ENV     PHP_CPPFLAGS="$PHP_CFLAGS"
+ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
+ENV     PHP_CS_FIXER_IGNORE_ENV=1
+
+STOPSIGNAL SIGQUIT
+
+WORKDIR /var/www/html
+
+EXPOSE  9000
+
+ENTRYPOINT ["docker-php-entrypoint"]
+
+CMD     ["php-fpm"]
