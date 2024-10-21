@@ -1,0 +1,100 @@
+name: build php-fpm testing
+
+on:
+    repository_dispatch:
+        types: [php-fpm]
+
+env:
+    EVENT: php-fpm-testing
+    LATEST_TAG: latest
+    PHP_NAME: php-fpm
+    OWNER: ghcr.io/960018
+
+jobs:
+
+    build:
+        strategy:
+            matrix:
+                arch: [amd64, arm64]
+                include:
+                    -   arch: amd64
+                        os: self-amd64
+                    -   arch: arm64
+                        os: self-arm64
+        runs-on: ${{ matrix.os }}
+        steps:
+            -   name: login
+                uses: docker/login-action@v3
+                with:
+                    registry: ghcr.io
+                    username: ${{ github.repository_owner }}
+                    password: ${{ secrets.GH_TOKEN }}
+            -   name: checkout
+                uses: actions/checkout@v4
+            -   name: buildkit
+                uses: docker/setup-buildx-action@v3
+                with:
+                    driver-opts: image=moby/buildkit:master-rootless,debug=false
+            -   name: clone
+                run: |
+                    clone_repo() {
+                        cd $1
+                        git clone --single-branch $2 $3
+                        cd $3
+                        git submodule update --init --force
+                        rm -rf .git .github
+                        cd ../..
+                    }
+                    clone_repo php https://github.com/php/php-src.git source
+                    clone_repo php https://github.com/fork-php/xdebug.git xdebug
+            -   name: build php-fpm socket
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.PHP_NAME }}-socket.dockerfile
+                    push: true
+                    no-cache: true
+                    provenance: true
+                    sbom: true
+                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-socket
+            -   name: build php-fpm testing
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.PHP_NAME }}-testing.dockerfile
+                    push: true
+                    no-cache: true
+                    provenance: true
+                    sbom: true
+                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-testing
+            -   name: cleanup
+                run: |
+                    ls -la ./
+                    rm -rf ./* || true
+                    rm -rf ./.??* || true
+                    ls -la ./
+
+    multiarch:
+        runs-on: self-amd64
+        needs: [ build ]
+        steps:
+            -   name: login
+                uses: docker/login-action@v3
+                with:
+                    registry: ghcr.io
+                    username: ${{ github.repository_owner }}
+                    password: ${{ secrets.GH_TOKEN }}
+            -   name: buildkit
+                uses: docker/setup-buildx-action@v3
+                with:
+                    driver-opts: image=moby/buildkit:master-rootless,debug=false
+            -   name: multiarch
+                run: |
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-socket ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-socket --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-socket
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-testing ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-testing --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-testing
+            -   name: dispatch
+                uses: peter-evans/repository-dispatch@v3
+                with:
+                    event-type: ${{ env.EVENT }}
+                    token: ${{ secrets.GH_TOKEN }}
+                    repository: 960018/docker-images
