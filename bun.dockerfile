@@ -28,7 +28,6 @@ RUN     \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 &&      apt-get autoremove -y --purge \
 &&      rm -rf \
-            /etc/nginx/conf.d/* \
             /home/vairogs/*.deb \
             /*.deb \
             /tmp/* \

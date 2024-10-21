@@ -38,14 +38,14 @@ jobs:
             -   name: clone
                 run: |
                     clone_repo() {
-                        cd $1
-                        git clone --single-branch $2 $3
-                        cd $3
+                        cd php
+                        git clone --single-branch $1 $2
+                        cd $2
                         git submodule update --init --force
                         rm -rf .git .github
                         cd ../..
                     }
-                    clone_repo php https://github.com/php/php-src.git source
+                    clone_repo https://github.com/php/php-src.git source
             -   name: build php-fpm base
                 uses: docker/build-push-action@v6
                 with:

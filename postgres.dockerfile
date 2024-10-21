@@ -34,7 +34,18 @@ RUN     \
 &&      chown -R postgres:postgres /backup \
 &&      mkdir -p /docker-entrypoint-initdb.d \
 &&      mkdir -p /backup/scripts \
-&&      mkdir -p /backup/dumps
+&&      mkdir -p /backup/dumps \
+&&      apt-get autoremove -y --purge \
+&&      rm -rf \
+            /home/vairogs/*.deb \
+            /*.deb \
+            /tmp/* \
+            /usr/share/man \
+            /usr/share/doc \
+            /usr/local/share/man \
+            /var/lib/apt/lists/* \
+            /usr/lib/python3.11/__pycache__ \
+            /root/.cache
 
 COPY    --chmod=0755 postgres/pg_backup.config /backup/scripts/pg_backup.config
 COPY    --chmod=0755 postgres/pg_backup_rotated.sh /backup/scripts/pg_backup_rotated.sh

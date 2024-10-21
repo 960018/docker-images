@@ -41,17 +41,17 @@ jobs:
             -   name: clone
                 run: |
                     clone_repo() {
-                        cd $1
-                        git clone --single-branch $2 $3
-                        cd $3
+                        cd curl
+                        git clone --single-branch $1 $2
+                        cd $2
                         git submodule update --init --force
                         rm -rf .git .github
                         cd ../..
                     }
-                    clone_repo curl https://github.com/curl/curl.git source
-                    clone_repo curl https://github.com/ngtcp2/nghttp3.git nghttp3
-                    clone_repo curl https://github.com/ngtcp2/ngtcp2.git ngtcp2
-                    clone_repo curl https://github.com/wolfSSL/wolfssl.git wolfssl
+                    clone_repo https://github.com/curl/curl.git source
+                    clone_repo https://github.com/ngtcp2/nghttp3.git nghttp3
+                    clone_repo https://github.com/ngtcp2/ngtcp2.git ngtcp2
+                    clone_repo https://github.com/wolfSSL/wolfssl.git wolfssl
             -   name: build curl
                 uses: docker/build-push-action@v6
                 with:
