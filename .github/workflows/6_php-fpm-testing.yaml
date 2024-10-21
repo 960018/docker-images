@@ -74,6 +74,7 @@ jobs:
                     rm -rf ./* || true
                     rm -rf ./.??* || true
                     ls -la ./
+                    docker builder prune -af
 
     multiarch:
         runs-on: self-amd64
