@@ -34,7 +34,7 @@ jobs:
             -   name: buildkit
                 uses: docker/setup-buildx-action@v3
                 with:
-                    driver-opts: image=moby/buildkit:master-rootless,debug=false
+                    driver-opts: image=moby/buildkit:master-rootless
             -   name: clone
                 run: |
                     clone_repo() {
@@ -76,7 +76,7 @@ jobs:
             -   name: buildkit
                 uses: docker/setup-buildx-action@v3
                 with:
-                    driver-opts: image=moby/buildkit:master-rootless,debug=false
+                    driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-base ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-base --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-base
