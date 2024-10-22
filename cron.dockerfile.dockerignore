@@ -1,4 +1,4 @@
 *
-!global
 !cron
+!global
 !cron.dockerfile

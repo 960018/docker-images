@@ -1,4 +1,4 @@
 *
-!global
 !node
+!global
 !node.dockerfile
