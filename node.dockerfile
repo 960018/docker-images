@@ -54,7 +54,7 @@ RUN    \
 &&      mkdir --parents /home/vairogs/environment \
 &&      env | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /home/vairogs/environment/environment.txt
 
-COPY    --chmod=0755 curl/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
+COPY    --chmod=0755 node/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
 
 FROM    ghcr.io/960018/scratch:latest
 
