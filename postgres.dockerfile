@@ -2,6 +2,10 @@ ARG     VERSION
 
 FROM    postgres:${VERSION}-bookworm
 
+LABEL   maintainer="support@vairogs.com"
+LABEL   org.opencontainers.image.source="https://github.com/960018/docker-images"
+LABEL   org.opencontainers.image.licenses="MIT"
+
 SHELL   ["/bin/bash", "-o", "pipefail", "-c"]
 
 ENV     container=docker

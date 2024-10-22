@@ -64,7 +64,7 @@ jobs:
                     sbom: true
                     tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-base
                     build-args: |
-                        COMMIT_HASH=${{ steps.clone_repo.outputs.source_commit_hash }}
+                        COMMIT_HASH=${{ steps.clone.outputs.source_commit_hash }}
             -   name: cleanup
                 run: |
                     ls -la ./

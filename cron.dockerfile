@@ -1,6 +1,5 @@
 FROM    debian:sid-slim AS builder
 
-LABEL   maintainer="support+docker@vairogs.com"
 ENV     container=docker
 ENV     DEBIAN_FRONTEND=noninteractive
 
