@@ -23,8 +23,6 @@ COPY    php/build/extensions.json /tmp/extensions.json
 
 COPY    --from=composer:latest              /usr/bin/composer /usr/bin/
 
-ENTRYPOINT ["docker-php-entrypoint"]
-
 STOPSIGNAL SIGQUIT
 
 WORKDIR /tmp
@@ -90,27 +88,19 @@ RUN     \
 
 WORKDIR /var/www/html
 
-USER    vairogs
-
-CMD     ["php-fpm"]
+RUN    \
+        set -eux \
+&&      mkdir --parents /home/vairogs/environment \
+&&      env | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /home/vairogs/environment/environment.txt
 
 FROM    ghcr.io/960018/scratch:latest
 
 COPY    --from=builder / /
-
-ENV     PHP_VERSION=8.5.0-dev
-ENV     PHP_INI_DIR=/usr/local/etc/php
-ENV     PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native"
-ENV     PHP_CPPFLAGS="$PHP_CFLAGS"
-ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
-ENV     PHP_CS_FIXER_IGNORE_ENV=1
 
 STOPSIGNAL SIGQUIT
 
 WORKDIR /var/www/html
 
 EXPOSE  9000
-
-ENTRYPOINT ["docker-php-entrypoint"]
 
 CMD     ["php-fpm"]

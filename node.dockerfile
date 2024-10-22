@@ -1,9 +1,8 @@
-ARG     VERSION=23.0.0
-
-FROM    node:${VERSION}-bookworm-slim AS builder
+FROM    node:current-bookworm-slim AS builder
 
 ENV     container=docker
 ENV     DEBIAN_FRONTEND=noninteractive
+ENV     NODE_COMPILE_CACHE=/home/vairogs/.node_cache
 
 SHELL   ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -50,19 +49,15 @@ RUN     \
 &&      npm i -g npm@next-10 \
 &&      npm i -g n@latest
 
-USER    vairogs
+RUN    \
+        set -eux \
+&&      mkdir --parents /home/vairogs/environment \
+&&      env | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /home/vairogs/environment/environment.txt
+
+COPY    --chmod=0755 curl/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
 
 FROM    ghcr.io/960018/scratch:latest
 
 COPY    --from=builder / /
-
-ARG     VERSION=23.0.0
-ARG     YARN_VERSION=1.22.22
-
-ENV     NODE_VERSION=${VERSION}
-ENV     YARN_VERSION=${YARN_VERSION}
-ENV     NODE_COMPILE_CACHE=/home/vairogs/.node_cache
-
-ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD     ["node"]

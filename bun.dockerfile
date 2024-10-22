@@ -45,7 +45,12 @@ RUN     \
             /root/.cache \
 &&      usermod -a -G dialout vairogs
 
-USER    vairogs
+RUN    \
+        set -eux \
+&&      mkdir --parents /home/vairogs/environment \
+&&      env | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /home/vairogs/environment/environment.txt
+
+COPY    --chmod=0755 curl/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
 
 FROM    ghcr.io/960018/scratch:latest
 
@@ -56,7 +61,5 @@ ARG     BUN_INSTALL_BIN=/usr/local/bin
 ENV     BUN_INSTALL_BIN=${BUN_INSTALL_BIN}
 
 COPY    --from=builder / /
-
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD     ["bash"]

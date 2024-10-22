@@ -1,5 +1,7 @@
 FROM    ghcr.io/960018/curl:latest AS builder
 
+ARG     COMMIT_HASH
+
 USER    root
 
 ENV     PHP_VERSION=8.5.0-dev
@@ -8,6 +10,7 @@ ENV     PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D
 ENV     PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
 ENV     PHP_CS_FIXER_IGNORE_ENV=1
+ENV     PHP_COMMIT_HASH=${COMMIT_HASH}
 
 COPY    php/no-debian-php /etc/apt/preferences.d/no-debian-php
 COPY    php/source/          /usr/src/php
@@ -17,8 +20,6 @@ COPY    php/docker/docker-php-ext-configure /usr/local/bin/docker-php-ext-config
 COPY    php/docker/docker-php-ext-enable    /usr/local/bin/docker-php-ext-enable
 COPY    php/docker/docker-php-ext-install   /usr/local/bin/docker-php-ext-install
 COPY    php/docker/docker-php-source        /usr/local/bin/docker-php-source
-
-ENTRYPOINT ["docker-php-entrypoint"]
 
 STOPSIGNAL SIGQUIT
 
@@ -138,6 +139,7 @@ RUN     \
             /usr/share/vim/vim90/doc \
             /usr/local/bin/install-php-extensions \
             /usr/share/man/* \
+            /home/vairogs/env_entrypoint.sh \
 &&      mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 COPY    php/ini/php-fpm.conf /usr/local/etc/php-fpm.conf
@@ -155,27 +157,21 @@ RUN     \
 
 WORKDIR /var/www/html
 
-USER    vairogs
+RUN    \
+        set -eux \
+&&      mkdir --parents /home/vairogs/environment \
+&&      env | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /home/vairogs/environment/environment.txt
 
-CMD     ["php-fpm"]
+COPY    --chmod=0755 php/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
 
 FROM    ghcr.io/960018/scratch:latest
 
 COPY    --from=builder / /
-
-ENV     PHP_VERSION=8.5.0-dev
-ENV     PHP_INI_DIR=/usr/local/etc/php
-ENV     PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native"
-ENV     PHP_CPPFLAGS="$PHP_CFLAGS"
-ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
-ENV     PHP_CS_FIXER_IGNORE_ENV=1
 
 STOPSIGNAL SIGQUIT
 
 WORKDIR /var/www/html
 
 EXPOSE  9000
-
-ENTRYPOINT ["docker-php-entrypoint"]
 
 CMD     ["php-fpm"]

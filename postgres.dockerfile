@@ -7,11 +7,11 @@ SHELL   ["/bin/bash", "-o", "pipefail", "-c"]
 ENV     container=docker
 ENV     DEBIAN_FRONTEND=noninteractive
 
-COPY    global/01_nodoc  /etc/dpkg/dpkg.cfg.d/01_nodoc
+COPY    global/01_nodoc   /etc/dpkg/dpkg.cfg.d/01_nodoc
 COPY    global/02_nocache /etc/apt/apt.conf.d/02_nocache
-COPY    global/compress  /etc/initramfs-tools/conf.d/compress
-COPY    global/modules   /etc/initramfs-tools/conf.d/modules
-COPY    global/90parallel   /etc/apt/apt.conf.d/90parallel
+COPY    global/compress   /etc/initramfs-tools/conf.d/compress
+COPY    global/modules    /etc/initramfs-tools/conf.d/modules
+COPY    global/90parallel /etc/apt/apt.conf.d/90parallel
 
 ARG     POSTGRES_LOCALE=en_US
 

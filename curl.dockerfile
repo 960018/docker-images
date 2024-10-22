@@ -5,12 +5,13 @@ ENV     DEBIAN_FRONTEND=noninteractive
 
 SHELL   ["/bin/bash", "-o", "pipefail", "-c"]
 
-COPY    global/01_nodoc  /etc/dpkg/dpkg.cfg.d/01_nodoc
+COPY    global/01_nodoc   /etc/dpkg/dpkg.cfg.d/01_nodoc
 COPY    global/02_nocache /etc/apt/apt.conf.d/02_nocache
-COPY    global/compress  /etc/initramfs-tools/conf.d/compress
-COPY    global/modules   /etc/initramfs-tools/conf.d/modules
-COPY    global/90parallel   /etc/apt/apt.conf.d/90parallel
-COPY    global/wait-for-it.sh /usr/local/bin/wait-for-it
+COPY    global/compress   /etc/initramfs-tools/conf.d/compress
+COPY    global/modules    /etc/initramfs-tools/conf.d/modules
+COPY    global/90parallel /etc/apt/apt.conf.d/90parallel
+
+COPY    --chmod=0755 global/wait-for-it.sh /usr/local/bin/wait-for-it
 
 USER    root
 
@@ -93,9 +94,12 @@ RUN     \
             /var/lib/apt/lists/* \
             /usr/lib/python3.11/__pycache__
 
-USER    vairogs
+RUN    \
+        set -eux \
+&&      mkdir --parents /home/vairogs/environment \
+&&      env | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /home/vairogs/environment/environment.txt
 
-CMD     ["/bin/bash"]
+COPY    --chmod=0755 curl/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
 
 FROM    ghcr.io/960018/scratch:latest
 

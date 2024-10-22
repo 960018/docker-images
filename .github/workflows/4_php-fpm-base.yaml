@@ -37,14 +37,20 @@ jobs:
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: clone
+                id: clone
                 run: |
                     clone_repo() {
                         cd php
                         git clone --single-branch $1 $2
                         cd $2
                         git submodule update --init --force
+                    
+                        COMMIT_HASH=$(git rev-parse HEAD)
+                    
                         rm -rf .git .github
                         cd ../..
+                    
+                        echo "${2}_commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
                     }
                     clone_repo https://github.com/php/php-src.git source
             -   name: build php-fpm base
@@ -57,6 +63,8 @@ jobs:
                     provenance: true
                     sbom: true
                     tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-base
+                    build-args: |
+                        COMMIT_HASH=${{ steps.clone_repo.outputs.source_commit_hash }}
             -   name: cleanup
                 run: |
                     ls -la ./

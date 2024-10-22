@@ -54,8 +54,6 @@ COPY    nginx/nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /var/www/html
 
-USER    vairogs
-
 FROM    ghcr.io/960018/scratch:latest
 
 COPY    --from=builder / /

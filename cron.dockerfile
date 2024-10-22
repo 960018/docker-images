@@ -6,11 +6,11 @@ ENV     DEBIAN_FRONTEND=noninteractive
 
 SHELL   ["/bin/bash", "-o", "pipefail", "-c"]
 
-COPY    global/01_nodoc  /etc/dpkg/dpkg.cfg.d/01_nodoc
+COPY    global/01_nodoc   /etc/dpkg/dpkg.cfg.d/01_nodoc
 COPY    global/02_nocache /etc/apt/apt.conf.d/02_nocache
-COPY    global/compress  /etc/initramfs-tools/conf.d/compress
-COPY    global/modules   /etc/initramfs-tools/conf.d/modules
-COPY    global/90parallel   /etc/apt/apt.conf.d/90parallel
+COPY    global/compress   /etc/initramfs-tools/conf.d/compress
+COPY    global/modules    /etc/initramfs-tools/conf.d/modules
+COPY    global/90parallel /etc/apt/apt.conf.d/90parallel
 
 COPY    --chmod=0755 global/wait-for-it.sh /usr/local/bin/wait-for-it
 COPY    --chmod=0755 cron/update_crontab.sh /usr/local/bin/update_crontab
