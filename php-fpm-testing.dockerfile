@@ -57,6 +57,8 @@ COPY    php/ini/opcache.no-jit.ini /usr/local/etc/php/conf.d/docker-php-ext-opca
 
 WORKDIR /var/www/html
 
+USER    vairogs
+
 RUN    \
         set -eux \
 &&      mkdir --parents /home/vairogs/environment \

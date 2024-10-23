@@ -49,6 +49,8 @@ RUN     \
 &&      npm i -g npm@next-10 \
 &&      npm i -g n@latest
 
+USER    vairogs
+
 RUN    \
         set -eux \
 &&      mkdir --parents /home/vairogs/environment \

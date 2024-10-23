@@ -88,6 +88,8 @@ RUN     \
 
 WORKDIR /var/www/html
 
+USER    vairogs
+
 RUN    \
         set -eux \
 &&      mkdir --parents /home/vairogs/environment \

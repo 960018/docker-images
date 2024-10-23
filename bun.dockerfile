@@ -45,6 +45,8 @@ RUN     \
             /root/.cache \
 &&      usermod -a -G dialout vairogs
 
+USER    vairogs
+
 RUN    \
         set -eux \
 &&      mkdir --parents /home/vairogs/environment \

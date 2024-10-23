@@ -33,7 +33,8 @@ RUN     \
 &&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
 &&      chown vairogs:vairogs /usr/local/bin/wait-for-it \
 &&      chmod +x /usr/local/bin/wait-for-it \
-&&      ln -sf /usr/bin/vi /usr/bin/vim
+&&      ln -sf /usr/bin/vi /usr/bin/vim \
+&&      chown -R vairogs:vairogs /home/vairogs
 
 WORKDIR /home/vairogs
 
@@ -93,6 +94,8 @@ RUN     \
             /usr/local/share/man \
             /var/lib/apt/lists/* \
             /usr/lib/python3.11/__pycache__
+
+USER    vairogs
 
 RUN    \
         set -eux \
