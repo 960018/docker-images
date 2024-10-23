@@ -49,6 +49,8 @@ RUN     \
 &&      npm i -g npm@next-10 \
 &&      npm i -g n@latest
 
+RUN echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
+
 USER    vairogs
 
 RUN    \
