@@ -3,7 +3,7 @@ run-name: build curl
 
 on:
     repository_dispatch:
-        types: [dependants]
+        types: [ dependants ]
 
 env:
     EVENT: curl
@@ -16,7 +16,7 @@ jobs:
     build:
         strategy:
             matrix:
-                arch: [amd64, arm64]
+                arch: [ amd64, arm64 ]
                 include:
                     -   arch: amd64
                         os: self-amd64

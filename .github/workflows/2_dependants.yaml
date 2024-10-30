@@ -3,7 +3,7 @@ run-name: build dependants
 
 on:
     repository_dispatch:
-        types: [independent]
+        types: [ independent ]
 
 env:
     BUILDS: "bun nginx node cron"
@@ -20,7 +20,7 @@ jobs:
     build:
         strategy:
             matrix:
-                arch: [amd64, arm64]
+                arch: [ amd64, arm64 ]
                 include:
                     -   arch: amd64
                         os: self-amd64
@@ -75,7 +75,7 @@ jobs:
 
     multiarch:
         runs-on: self-arm64
-        needs: [build]
+        needs: [ build ]
         steps:
             -   name: login
                 uses: docker/login-action@v3

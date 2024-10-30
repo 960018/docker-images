@@ -3,7 +3,7 @@ run-name: build php-fpm testing
 
 on:
     repository_dispatch:
-        types: [php-fpm]
+        types: [ php-fpm ]
 
 env:
     EVENT: php-fpm-testing
@@ -16,7 +16,7 @@ jobs:
     build:
         strategy:
             matrix:
-                arch: [amd64, arm64]
+                arch: [ amd64, arm64 ]
                 include:
                     -   arch: amd64
                         os: self-amd64
@@ -43,21 +43,16 @@ jobs:
                         git clone --single-branch $1 $2
                         cd $2
                         git submodule update --init --force
+                    
+                        COMMIT_HASH=$(git rev-parse HEAD)
+                    
                         rm -rf .git .github
                         cd ../..
+                    
+                        echo "${2}_commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
                     }
-                    clone_repo https://github.com/php/php-src.git source
+                    clone_repo https://github.com/fork-php/php-src.git source
                     clone_repo https://github.com/fork-php/xdebug.git xdebug
-            -   name: build php-fpm socket
-                uses: docker/build-push-action@v6
-                with:
-                    context: .
-                    file: ${{ env.PHP_NAME }}-socket.dockerfile
-                    push: true
-                    no-cache: true
-                    provenance: true
-                    sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-socket
             -   name: build php-fpm testing
                 uses: docker/build-push-action@v6
                 with:
@@ -92,7 +87,6 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-socket ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-socket --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-socket
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-testing ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-testing --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-testing
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3

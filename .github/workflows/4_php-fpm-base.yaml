@@ -3,7 +3,7 @@ run-name: build php-fpm base
 
 on:
     repository_dispatch:
-        types: [curl]
+        types: [ curl ]
 
 env:
     EVENT: php-fpm-base
@@ -16,7 +16,7 @@ jobs:
     build:
         strategy:
             matrix:
-                arch: [amd64, arm64]
+                arch: [ amd64, arm64 ]
                 include:
                     -   arch: amd64
                         os: self-amd64
@@ -52,7 +52,7 @@ jobs:
                     
                         echo "${2}_commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
                     }
-                    clone_repo https://github.com/php/php-src.git source
+                    clone_repo https://github.com/fork-php/php-src.git source
             -   name: build php-fpm base
                 uses: docker/build-push-action@v6
                 with:

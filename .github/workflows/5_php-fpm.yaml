@@ -3,7 +3,7 @@ run-name: build php-fpm
 
 on:
     repository_dispatch:
-        types: [php-fpm-base]
+        types: [ php-fpm-base ]
 
 env:
     EVENT: php-fpm
@@ -16,7 +16,7 @@ jobs:
     build:
         strategy:
             matrix:
-                arch: [amd64, arm64]
+                arch: [ amd64, arm64 ]
                 include:
                     -   arch: amd64
                         os: self-amd64
@@ -43,10 +43,15 @@ jobs:
                         git clone --single-branch $1 $2
                         cd $2
                         git submodule update --init --force
+                    
+                        COMMIT_HASH=$(git rev-parse HEAD)
+                    
                         rm -rf .git .github
                         cd ../..
+                    
+                        echo "${2}_commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
                     }
-                    clone_repo https://github.com/php/php-src.git source
+                    clone_repo https://github.com/fork-php/php-src.git source
                     clone_repo https://github.com/fork-php/apcu.git apcu
                     clone_repo https://github.com/fork-php/ext-ds.git ext-ds
                     clone_repo https://github.com/fork-php/igbinary.git igbinary
