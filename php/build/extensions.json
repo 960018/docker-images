@@ -65,7 +65,7 @@
     "zip": {
         "source": "/tmp/extensions/php_zip/",
         "enable": true,
-        "req": "libzip4t64 libzip-dev",
+        "req": "libzip5 libzip-dev zipcmp",
         "remove": "libzip-dev"
     },
     "redis": {
