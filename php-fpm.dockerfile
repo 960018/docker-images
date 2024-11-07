@@ -1,6 +1,4 @@
-FROM    ghcr.io/960018/php-fpm:latest-base AS builder
-
-ARG     ARCH
+FROM    ghcr.io/960018/php/fpm-base:latest-base AS builder
 
 USER    root
 
@@ -37,7 +35,7 @@ RUN    \
 &&      apt-get install -y --no-install-recommends --allow-downgrades libpng16-16t64 libjpeg62-turbo libbrotli1 libwebp7 libfreetype6 \
 &&      apt-get install -y --no-install-recommends --allow-downgrades zlib1g-dev libbrotli-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libfreetype-dev \
 &&      chmod -R 1777 /usr/local/bin \
-&&      export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" PHP_BUILD_PROVIDER='https://github.com/960018/docker-images' PHP_UNAME="Linux (${ARCH}) - Docker" \
+&&      export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
 &&      docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ --with-webp=/usr/include/ \
 &&      docker-php-ext-install gd \
 &&      docker-php-ext-enable gd

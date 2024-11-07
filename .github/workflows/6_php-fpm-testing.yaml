@@ -8,8 +8,8 @@ on:
 env:
     EVENT: php-fpm-testing
     LATEST_TAG: latest
-    PHP_NAME: php-fpm
-    OWNER: ghcr.io/960018
+    PHP_NAME: fpm-testing
+    OWNER: ghcr.io/960018/php
 
 jobs:
 
@@ -62,7 +62,7 @@ jobs:
                     no-cache: true
                     provenance: true
                     sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-testing
+                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -87,7 +87,7 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-testing ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-testing --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-testing
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64 ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:

@@ -8,8 +8,8 @@ on:
 env:
     EVENT: php-fpm-base
     LATEST_TAG: latest
-    PHP_NAME: php-fpm
-    OWNER: ghcr.io/960018
+    PHP_NAME: fpm-base
+    OWNER: ghcr.io/960018/php
 
 jobs:
 
@@ -62,9 +62,10 @@ jobs:
                     no-cache: true
                     provenance: true
                     sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-base
+                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}
                     build-args: |
-                        COMMIT_HASH=${{ steps.clone.outputs.source_commit_hash }}
+                        PHP_COMMIT_HASH=${{ steps.clone.outputs.source_commit_hash }}
+                        ARCH=${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -89,7 +90,7 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-base ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-base --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-base
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64 ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:

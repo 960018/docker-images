@@ -1,6 +1,7 @@
 FROM    ghcr.io/960018/curl:latest AS builder
 
-ARG     COMMIT_HASH
+ARG     PHP_COMMIT_HASH
+ARG     ARCH
 
 USER    root
 
@@ -10,7 +11,9 @@ ENV     PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D
 ENV     PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
 ENV     PHP_CS_FIXER_IGNORE_ENV=1
-ENV     PHP_COMMIT_HASH=${COMMIT_HASH}
+ENV     PHP_COMMIT_HASH=${PHP_COMMIT_HASH}
+ENV     PHP_BUILD_PROVIDER='https://github.com/960018/docker-images'
+ENV     PHP_UNAME="Linux (${ARCH}) - Docker"
 
 COPY    php/no-debian-php /etc/apt/preferences.d/no-debian-php
 COPY    php/source/          /usr/src/php

@@ -8,8 +8,8 @@ on:
 env:
     EVENT: php-fpm
     LATEST_TAG: latest
-    PHP_NAME: php-fpm
-    OWNER: ghcr.io/960018
+    PHP_NAME: fpm
+    OWNER: ghcr.io/960018/php
 
 jobs:
 
@@ -80,8 +80,6 @@ jobs:
                     provenance: true
                     sbom: true
                     tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}
-                    build-args: |
-                        ARCH=${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./

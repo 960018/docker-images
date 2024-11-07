@@ -8,8 +8,9 @@ on:
 env:
     EVENT: php-fpm-socket
     LATEST_TAG: latest
-    PHP_NAME: php-fpm
-    OWNER: ghcr.io/960018
+    PHP_NAME: fpm-socket
+    PHP_NAME_TESTTING: fpm-testing-socket
+    OWNER: ghcr.io/960018/php
 
 jobs:
 
@@ -45,7 +46,7 @@ jobs:
                     no-cache: true
                     provenance: true
                     sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-socket
+                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}
             -   name: build php-fpm testing socket
                 uses: docker/build-push-action@v6
                 with:
@@ -55,7 +56,7 @@ jobs:
                     no-cache: true
                     provenance: true
                     sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}-testing-socket
+                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME_TESTTING }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -80,8 +81,8 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-socket ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-socket --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-socket
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64-testing-socket ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64-testing-socket --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}-testing-socket
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64 ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME_TESTTING }}:amd64 ${{ env.OWNER }}/${{ env.PHP_NAME_TESTTING }}:arm64 --tag ${{ env.OWNER }}/${{ env.PHP_NAME_TESTTING }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:

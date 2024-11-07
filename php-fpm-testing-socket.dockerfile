@@ -1,4 +1,4 @@
-FROM    ghcr.io/960018/php-fpm:latest-testing
+FROM    ghcr.io/960018/php/fpm-testing:latest
 
 USER    root
 
