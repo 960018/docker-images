@@ -74,7 +74,7 @@ jobs:
                 uses: docker/build-push-action@v6
                 with:
                     context: .
-                    file: ${{ env.PHP_NAME }}.dockerfile
+                    file: php-${{ env.PHP_NAME }}.dockerfile
                     push: true
                     no-cache: true
                     provenance: true
