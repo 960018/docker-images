@@ -18,7 +18,7 @@ ENV     PHP_UNAME="Linux (${ARCH}) - Docker"
 COPY    php/no-debian-php /etc/apt/preferences.d/no-debian-php
 COPY    php/source/          /usr/src/php
 
-COPY    php/docker/docker-php-entrypoint    /usr/local/bin/docker-php-entrypoint
+COPY    php/docker/fpm/docker-php-entrypoint    /usr/local/bin/docker-php-entrypoint
 COPY    php/docker/docker-php-ext-configure /usr/local/bin/docker-php-ext-configure
 COPY    php/docker/docker-php-ext-enable    /usr/local/bin/docker-php-ext-enable
 COPY    php/docker/docker-php-ext-install   /usr/local/bin/docker-php-ext-install
@@ -145,9 +145,9 @@ RUN     \
             /home/vairogs/env_entrypoint.sh \
 &&      mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
-COPY    php/ini/php-fpm.conf /usr/local/etc/php-fpm.conf
-COPY    php/ini/www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY    php/ini/zz.ini /usr/local/etc/php/conf.d/zz.ini
+COPY    php/ini/fpm/php-fpm.conf /usr/local/etc/php-fpm.conf
+COPY    php/ini/fpm/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY    php/ini/fpm/zz.ini /usr/local/etc/php/conf.d/zz.ini
 COPY    php/ini/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 COPY    php/preload.php /var/www/preload.php
 

@@ -9,7 +9,6 @@ ENV     PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
 
 COPY    php/docker/docker-php-ext-enable    /usr/local/bin/docker-php-ext-enable
-
 COPY    php/build/build-extensions.sh /tmp/build-extensions.sh
 COPY    php/build/extensions-dev.json /tmp/extensions.json
 

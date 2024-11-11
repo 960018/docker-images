@@ -10,7 +10,7 @@ ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
 
 COPY    php/source/          /usr/src/php
 
-COPY    php/docker/docker-php-entrypoint    /usr/local/bin/docker-php-entrypoint
+COPY    php/docker/fpm/docker-php-entrypoint    /usr/local/bin/docker-php-entrypoint
 COPY    php/docker/docker-php-ext-configure /usr/local/bin/docker-php-ext-configure
 COPY    php/docker/docker-php-ext-enable    /usr/local/bin/docker-php-ext-enable
 COPY    php/docker/docker-php-ext-install   /usr/local/bin/docker-php-ext-install
