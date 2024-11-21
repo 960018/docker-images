@@ -48,8 +48,8 @@ RUN     \
 &&      apt-get update \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends make automake autoconf libtool ca-certificates gcc g++ libbrotli1 libbrotli-dev zstd libzstd-dev librtmp-dev librtmp1 rtmpdump pkg-config \
-        libgsasl-dev libgsasl18 libpsl-dev perl libnghttp2-dev nghttp2 libssl-dev libssl3t64 libpsl5t64 \
-&&      cd  nghttp3 \
+        libgsasl-dev libgsasl18 libpsl-dev perl libnghttp2-dev nghttp2 libssl-dev libssl3t64 libpsl5t64 libssh2-1-dev libssh2-1t64 libldap-dev libldap2-dev libldap-common libldap-2.5-0 \
+&&      cd nghttp3 \
 &&      autoreconf -fi \
 &&      ./configure --prefix=/usr/local --enable-lib-only \
 &&      make \
@@ -57,8 +57,16 @@ RUN     \
 &&      cd ../wolfssl \
 &&      autoreconf -fi \
 &&      ./configure --enable-session-ticket --enable-earlydata --enable-psk --enable-altcertchains --disable-examples \
-            --enable-dtls --enable-sctp --enable-opensslextra --enable-opensslall --enable-sniffer --enable-sha512 --enable-ed25519 --enable-rsapss --enable-base64encode --enable-tlsx \
-            --enable-scrypt --disable-crypttests --enable-fastmath --enable-harden --enable-quic --enable-all --enable-experimental \
+                    --enable-dtls --enable-sctp --enable-opensslextra --enable-opensslall --enable-sniffer --enable-sha512 \
+                    --enable-ed25519 --enable-rsapss --enable-base64encode --enable-tlsx --enable-scrypt --disable-crypttests \
+                    --enable-fastmath --enable-harden --enable-quic --enable-all --enable-experimental --enable-aesgcm \
+                    --enable-chacha --enable-alpn --enable-certgen --enable-certreq --enable-ecc --enable-dtls-mtu \
+                    --enable-curve25519 --enable-pkcs11 --enable-aesxts --enable-aesccm --enable-aeseax --enable-aessiv \
+                    --enable-aesctr --enable-aesofb --enable-aescfb --enable-aeskeywrap --enable-sp --enable-heapmath \
+                    --enable-certgencache --enable-dilithium --enable-iopool --enable-wolfsentry \
+                    --enable-wpas --enable-haproxy --enable-libssh2 --enable-signal --enable-openldap --enable-memcached \
+                    --enable-mosquitto --enable-dtls13 --enable-secure-renegotiation --enable-wolftpm --enable-rwlock \
+                    --enable-libwebsockets --enable-dtls-frag-ch \
 &&      make \
 &&      make install \
 &&      cd ../ngtcp2 \
@@ -70,11 +78,11 @@ RUN     \
 &&      autoreconf -fi \
 &&      ./configure CFLAGS='-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native' --prefix=/usr/local \
             --with-wolfssl --with-zlib --with-brotli --enable-ipv6 --with-libidn2 --enable-sspi --with-librtmp --with-ngtcp2 --with-nghttp3 --with-nghttp2 --enable-websockets --with-zstd --disable-manual --disable-docs \
-            --enable-ech \
+            --enable-ech --with-libssh2 --enable-ldap --enable-ldaps \
 &&      make \
 &&      make install \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false libbrotli-dev git cmake make automake autoconf libtool gcc g++ libzstd-dev libssl-dev librtmp-dev krb5-multidev libcrypt-dev libnsl-dev libtirpc-dev linux-libc-dev comerr-dev perl libnghttp3-dev \
-            libnghttp2-dev libgsasl-dev libgssglue-dev libidn-dev libidn11-dev libntlm0-dev libpsl-dev curl libcurl4 libgss-dev \
+            libnghttp2-dev libgsasl-dev libgssglue-dev libidn-dev libidn11-dev libntlm0-dev libpsl-dev curl libcurl4 libgss-dev libssh2-1-dev libldap-dev libldap2-dev \
 &&      apt-get autoremove -y --purge \
 &&      ldconfig \
 &&      sed -i 's/Requires.private/Requires/' /usr/local/lib/pkgconfig/libcurl.pc \
@@ -93,7 +101,9 @@ RUN     \
             /usr/share/doc \
             /usr/local/share/man \
             /var/lib/apt/lists/* \
-            /usr/lib/python3.11/__pycache__
+            /usr/lib/python3.12/__pycache__ \
+            /usr/lib/python3.12/__phello__ \
+            /usr/lib/python3.12/__hello__.py
 
 RUN echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
 

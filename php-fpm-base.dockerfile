@@ -143,6 +143,9 @@ RUN     \
             /usr/local/bin/install-php-extensions \
             /usr/share/man/* \
             /home/vairogs/env_entrypoint.sh \
+            /usr/lib/python3.12/__pycache__ \
+            /usr/lib/python3.12/__phello__ \
+            /usr/lib/python3.12/__hello__.py \
 &&      mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 COPY    php/ini/fpm/php-fpm.conf /usr/local/etc/php-fpm.conf

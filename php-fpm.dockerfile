@@ -82,7 +82,10 @@ RUN     \
             /usr/local/etc/php/php.ini-production \
             /usr/share/vim/vim90/doc \
             /usr/local/bin/install-php-extensions \
-            /usr/share/man/*
+            /usr/share/man/* \
+            /usr/lib/python3.12/__pycache__ \
+            /usr/lib/python3.12/__phello__ \
+            /usr/lib/python3.12/__hello__.py
 
 WORKDIR /var/www/html
 
