@@ -11,9 +11,7 @@ env:
     EVENT: dependants
     LATEST_TAG: latest
     NODE_NAME: node
-    NODE_VERSION: 23.0.0
     OWNER: ghcr.io/960018
-    YARN_VERSION: 1.22.22
 
 jobs:
 
@@ -49,9 +47,6 @@ jobs:
                     no-cache: true
                     provenance: true
                     sbom: true
-                    build-args: |
-                        VERSION=${{ env.NODE_VERSION }}
-                        YARN_VERSION=${{ env.YARN_VERSION }}
                     tags: ${{ env.OWNER }}/${{ env.NODE_NAME }}:${{ matrix.arch }}
             -   name: build similar
                 run: |
