@@ -94,8 +94,8 @@
         "source": "/tmp/extensions/imagick/",
         "enable": true,
         "configure": "--with-imagick",
-        "req": "libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 libmagickcore-6.q16-dev libmagickwand-6.q16-dev",
-        "remove": "libmagickcore-6.q16-dev libmagickwand-6.q16-dev"
+        "req": "libmagickcore-7.q16-10 libmagickwand-7.q16-10 libmagickcore-7.q16-dev libmagickwand-7.q16-dev",
+        "remove": "libmagickcore-7.q16-dev libmagickwand-7.q16-dev"
     },
     "spx": {
         "source": "/tmp/extensions/php-spx/",
