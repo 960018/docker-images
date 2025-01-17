@@ -8,18 +8,18 @@ ENV     PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D
 ENV     PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
 
-COPY    php/source/          /usr/src/php
+COPY    php/source/                             /usr/src/php
 
 COPY    php/docker/fpm/docker-php-entrypoint    /usr/local/bin/docker-php-entrypoint
-COPY    php/docker/docker-php-ext-configure /usr/local/bin/docker-php-ext-configure
-COPY    php/docker/docker-php-ext-enable    /usr/local/bin/docker-php-ext-enable
-COPY    php/docker/docker-php-ext-install   /usr/local/bin/docker-php-ext-install
-COPY    php/docker/docker-php-source        /usr/local/bin/docker-php-source
+COPY    php/docker/docker-php-ext-configure     /usr/local/bin/docker-php-ext-configure
+COPY    php/docker/docker-php-ext-enable        /usr/local/bin/docker-php-ext-enable
+COPY    php/docker/docker-php-ext-install       /usr/local/bin/docker-php-ext-install
+COPY    php/docker/docker-php-source            /usr/local/bin/docker-php-source
 
-COPY    php/build/build-extensions.sh /tmp/build-extensions.sh
-COPY    php/build/extensions.json /tmp/extensions.json
+COPY    php/build/build-extensions.sh           /tmp/build-extensions.sh
+COPY    php/build/extensions.json               /tmp/extensions.json
 
-COPY    --from=composer:latest              /usr/bin/composer /usr/bin/
+COPY    --from=composer:snapshot                /usr/bin/composer /usr/bin/
 
 STOPSIGNAL SIGQUIT
 
@@ -33,7 +33,7 @@ RUN    \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends --allow-downgrades make libc-dev libc6-dev gcc g++ cpp git dpkg-dev autoconf jq wget \
 &&      apt-get install -y --no-install-recommends --allow-downgrades libpng16-16t64 libjpeg62-turbo libbrotli1 libwebp7 libfreetype6 \
-&&      apt-get install -y --no-install-recommends --allow-downgrades zlib1g-dev libbrotli-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libfreetype-dev \
+&&      apt-get install -y --no-install-recommends --allow-downgrades zlib1g-dev libbrotli-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libfreetype-dev libldap-dev \
 &&      chmod -R 1777 /usr/local/bin \
 &&      export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
 &&      docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ --with-webp=/usr/include/ \
@@ -64,7 +64,7 @@ RUN     \
 &&      chmod +x /tmp/build-extensions.sh \
 &&      /tmp/build-extensions.sh \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false make libc-dev libc6-dev cpp gcc g++ autoconf dpkg-dev \
-&&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false zlib1g-dev libbrotli-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libfreetype-dev \
+&&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false zlib1g-dev libbrotli-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libfreetype-dev libldap-dev \
 &&      rm -rf \
             ~/.pearrc \
             /home/vairogs/*.deb \
