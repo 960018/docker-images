@@ -19,7 +19,7 @@ COPY    php/docker/docker-php-source            /usr/local/bin/docker-php-source
 COPY    php/build/build-extensions.sh           /tmp/build-extensions.sh
 COPY    php/build/extensions.json               /tmp/extensions.json
 
-COPY    --from=composer:snapshot                /usr/bin/composer /usr/bin/
+COPY    --from=composer:2                       /usr/bin/composer /usr/bin/
 
 STOPSIGNAL SIGQUIT
 
