@@ -50,12 +50,10 @@ RUN     \
 &&      npm i -g n@latest \
 &&      corepack enable \
 &&      corepack prepare yarn@stable --activate \
-&&      yarn config set enableGlobalCache true \
-&&      yarn config set enableTelemetry 0 \
 &&      mkdir -p /tmp/yarn-setup \
 &&      cd /tmp/yarn-setup \
 &&      yarn set version stable \
-&&      yarn install --silent \
+&&      echo "Y" | yarn install --silent \
 &&      rm -rf /tmp/yarn-setup \
 &&      chown -R vairogs:vairogs /home/vairogs \
 &&      chown -R vairogs:vairogs /usr/local/lib/node_modules \
