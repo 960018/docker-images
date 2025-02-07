@@ -50,7 +50,7 @@ RUN     \
 &&      npm i -g n@latest \
 &&      corepack enable \
 &&      corepack prepare yarn@stable --activate \
-&&      ln -s $(which yarn) /usr/local/bin/yarn \
+&&      ln -sf $(which yarn) /usr/local/bin/yarn \
 &&      chown -R vairogs:vairogs /home/vairogs \
 &&      chown -R vairogs:vairogs /usr/local/lib/node_modules \
 &&      chmod -R 755 /usr/local/lib/node_modules
