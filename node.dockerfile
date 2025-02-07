@@ -50,11 +50,7 @@ RUN     \
 &&      npm i -g n@latest \
 &&      corepack enable \
 &&      corepack prepare yarn@stable --activate \
-&&      mkdir -p /tmp/yarn-setup \
-&&      cd /tmp/yarn-setup \
-&&      yarn set version stable \
-&&      echo "Y" | yarn install --silent \
-&&      rm -rf /tmp/yarn-setup \
+&&      corepack prepare yarn@stable --install \
 &&      chown -R vairogs:vairogs /home/vairogs \
 &&      chown -R vairogs:vairogs /usr/local/lib/node_modules \
 &&      chmod -R 755 /usr/local/lib/node_modules
