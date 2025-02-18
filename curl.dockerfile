@@ -61,8 +61,7 @@ RUN     \
                     --enable-ed25519 --enable-rsapss --enable-base64encode --enable-tlsx --enable-scrypt --disable-crypttests \
                     --enable-fastmath --enable-harden --enable-quic --enable-all --enable-experimental \
                     --enable-chacha --enable-alpn --enable-certgen --enable-certreq --enable-ecc --enable-dtls-mtu \
-                    --enable-curve25519 --enable-pkcs11 --enable-aesxts --enable-aesccm --enable-aeseax --enable-aessiv \
-                    --enable-aesctr --enable-aesofb --enable-aescfb --enable-aeskeywrap --enable-sp --enable-heapmath \
+                    --enable-curve25519 --enable-pkcs11 --enable-sp --enable-heapmath \
                     --enable-certgencache --enable-dilithium --enable-iopool --enable-wolfsentry \
                     --enable-wpas --enable-haproxy --enable-libssh2 --enable-signal --enable-openldap --enable-memcached \
                     --enable-mosquitto --enable-dtls13 --enable-secure-renegotiation --enable-wolftpm --enable-rwlock \
