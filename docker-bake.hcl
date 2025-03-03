@@ -8,7 +8,7 @@ variable "IS_GITHUB_ACTIONS" { default = "" }
 
 // Registry configuration
 variable "REGISTRY_BASE" { default = "ghcr.io/960018" }
-variable "IS_LOCAL" { default = notequal("true",IS_GITHUB_ACTIONS) }
+variable "IS_LOCAL" { default = equal("",IS_GITHUB_ACTIONS) }
 variable "REGISTRY_PREFIX" { default = IS_LOCAL ? "" : "${REGISTRY_BASE}/" }
 variable "IMAGE_PREFIX" { default = IS_LOCAL ? "local/" : "" }
 variable "PHP_REGISTRY_PREFIX" { default = IS_LOCAL ? "" : "${REGISTRY_BASE}/php/" }
