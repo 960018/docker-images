@@ -6,12 +6,7 @@ on:
         types: [ independent ]
 
 env:
-    BUILDS: "bun nginx node cron"
-    SIMILAR: "bun nginx cron"
     EVENT: dependants
-    LATEST_TAG: latest
-    NODE_NAME: node
-    OWNER: ghcr.io/960018
 
 jobs:
 
@@ -38,28 +33,15 @@ jobs:
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
-            -   name: build node
-                uses: docker/build-push-action@v6
+            -   name: build images
+                uses: docker/bake-action@v6
                 with:
-                    context: .
-                    file: ${{ env.NODE_NAME }}.dockerfile
+                    targets: bun,nginx,node,cron
                     push: true
-                    no-cache: true
-                    provenance: true
-                    sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.NODE_NAME }}:${{ matrix.arch }}
-            -   name: build similar
-                run: |
-                    for build_name in ${{ env.SIMILAR }}; do
-                        docker buildx build \
-                            --file ${build_name}.dockerfile \
-                            --push \
-                            --no-cache \
-                            --provenance=true \
-                            --sbom=true \
-                            --tag ${{ env.OWNER }}/${build_name}:${{ matrix.arch }} \
-                            .
-                    done
+                    set: |
+                        *.platform=linux/${{ matrix.arch }}
+                        *.args.TARGETARCH=${{ matrix.arch }}
+                        *.args.IS_GITHUB_ACTIONS=true
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -78,15 +60,20 @@ jobs:
                     registry: ghcr.io
                     username: ${{ github.repository_owner }}
                     password: ${{ secrets.GH_TOKEN }}
+            -   name: checkout
+                uses: actions/checkout@v4
             -   name: buildkit
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
-            -   name: multiarch
-                run: |
-                    for build_name in ${{ env.BUILDS }}; do
-                        docker buildx imagetools create ${{ env.OWNER }}/${build_name}:amd64 ${{ env.OWNER }}/${build_name}:arm64 --tag ${{ env.OWNER }}/${build_name}:${{ env.LATEST_TAG }}
-                    done
+            -   name: create multiarch images
+                uses: docker/bake-action@v6
+                with:
+                    targets: group:dependants-multiarch
+                    push: true
+                    set: |
+                        *.args.LATEST_TAG=${{ env.LATEST_TAG }}
+                        *.args.IS_GITHUB_ACTIONS=true
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:

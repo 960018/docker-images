@@ -7,9 +7,6 @@ on:
 
 env:
     EVENT: php-fpm-base
-    LATEST_TAG: latest
-    PHP_NAME: fpm-base
-    OWNER: ghcr.io/960018/php
 
 jobs:
 
@@ -44,28 +41,25 @@ jobs:
                         git clone --single-branch $1 $2
                         cd $2
                         git submodule update --init --force
-                    
+
                         COMMIT_HASH=$(git rev-parse HEAD)
-                    
+
                         rm -rf .git .github
                         cd ../..
-                    
+
                         echo "${2}_commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
                     }
                     clone_repo https://github.com/fork-php/php-src.git source
             -   name: build php-fpm base
-                uses: docker/build-push-action@v6
+                uses: docker/bake-action@v6
                 with:
-                    context: .
-                    file: php-${{ env.PHP_NAME }}.dockerfile
+                    targets: php-fpm-base
                     push: true
-                    no-cache: true
-                    provenance: true
-                    sbom: true
-                    tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}
-                    build-args: |
-                        PHP_COMMIT_HASH=${{ steps.clone.outputs.source_commit_hash }}
-                        ARCH=${{ matrix.arch }}
+                    set: |
+                        *.platform=linux/${{ matrix.arch }}
+                        *.args.TARGETARCH=${{ matrix.arch }}
+                        *.args.PHP_COMMIT_HASH=${{ steps.clone.outputs.source_commit_hash }}
+                        *.args.IS_GITHUB_ACTIONS=true
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -84,13 +78,20 @@ jobs:
                     registry: ghcr.io
                     username: ${{ github.repository_owner }}
                     password: ${{ secrets.GH_TOKEN }}
+            -   name: checkout
+                uses: actions/checkout@v4
             -   name: buildkit
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
-            -   name: multiarch
-                run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.PHP_NAME }}:amd64 ${{ env.OWNER }}/${{ env.PHP_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}
+            -   name: create multiarch image
+                uses: docker/bake-action@v6
+                with:
+                    targets: php-fpm-base-multiarch
+                    push: true
+                    set: |
+                        *.args.LATEST_TAG=${{ env.LATEST_TAG }}
+                        *.args.IS_GITHUB_ACTIONS=true
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:
