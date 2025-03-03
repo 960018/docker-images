@@ -8,9 +8,11 @@ variable "IS_GITHUB_ACTIONS" { default = "" }
 
 // Registry configuration
 variable "REGISTRY_BASE" { default = "ghcr.io/960018" }
-variable "LOCAL_PREFIX" { default = notequal("true",IS_GITHUB_ACTIONS) ? "local:" : "" }
-variable "REGISTRY_PREFIX" { default = "${LOCAL_PREFIX}${REGISTRY_BASE}/" }
-variable "PHP_REGISTRY_PREFIX" { default = "${LOCAL_PREFIX}${REGISTRY_BASE}/php/" }
+variable "IS_LOCAL" { default = notequal("true",IS_GITHUB_ACTIONS) }
+variable "REGISTRY_PREFIX" { default = IS_LOCAL ? "" : "${REGISTRY_BASE}/" }
+variable "IMAGE_PREFIX" { default = IS_LOCAL ? "local/" : "" }
+variable "PHP_REGISTRY_PREFIX" { default = IS_LOCAL ? "" : "${REGISTRY_BASE}/php/" }
+variable "PHP_IMAGE_PREFIX" { default = IS_LOCAL ? "local/php/" : "" }
 
 // Build variables
 variable "TARGETARCH" { default = "arm64" }
@@ -42,7 +44,7 @@ target "multiarch-base" {
 target "scratch" {
     inherits = ["common"]
     dockerfile = "scratch.dockerfile"
-    tags = ["${REGISTRY_PREFIX}scratch:${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}scratch:${TARGETARCH}"]
     labels = {
         "org.opencontainers.image.description" = "custom built image with same user (vairogs) throughout all images"
     }
@@ -51,7 +53,7 @@ target "scratch" {
 target "bun" {
     inherits = ["common"]
     dockerfile = "bun.dockerfile"
-    tags = ["${REGISTRY_PREFIX}bun:${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}bun:${TARGETARCH}"]
     args = {
         BUN_RUNTIME_TRANSPILER_CACHE_PATH = "0"
         BUN_INSTALL_BIN = "/usr/local/bin"
@@ -61,31 +63,31 @@ target "bun" {
 target "cron" {
     inherits = ["common"]
     dockerfile = "cron.dockerfile"
-    tags = ["${REGISTRY_PREFIX}cron:${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}cron:${TARGETARCH}"]
 }
 
 target "node" {
     inherits = ["common"]
     dockerfile = "node.dockerfile"
-    tags = ["${REGISTRY_PREFIX}node:${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}node:${TARGETARCH}"]
 }
 
 target "curl" {
     inherits = ["common"]
     dockerfile = "curl.dockerfile"
-    tags = ["${REGISTRY_PREFIX}curl:${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}curl:${TARGETARCH}"]
 }
 
 target "nginx" {
     inherits = ["common"]
     dockerfile = "nginx.dockerfile"
-    tags = ["${REGISTRY_PREFIX}nginx:${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}nginx:${TARGETARCH}"]
 }
 
 target "php-fpm-base" {
     inherits = ["common"]
     dockerfile = "php-fpm-base.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm-base:${TARGETARCH}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm-base:${TARGETARCH}"]
     args = {
         PHP_COMMIT_HASH = ""
         ARCH = "${TARGETARCH}"
@@ -95,25 +97,25 @@ target "php-fpm-base" {
 target "php-fpm" {
     inherits = ["common"]
     dockerfile = "php-fpm.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm:${TARGETARCH}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm:${TARGETARCH}"]
 }
 
 target "php-fpm-socket" {
     inherits = ["common"]
     dockerfile = "php-fpm-socket.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm-socket:${TARGETARCH}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm-socket:${TARGETARCH}"]
 }
 
 target "php-fpm-testing" {
     inherits = ["common"]
     dockerfile = "php-fpm-testing.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm-testing:${TARGETARCH}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm-testing:${TARGETARCH}"]
 }
 
 target "php-fpm-testing-socket" {
     inherits = ["common"]
     dockerfile = "php-fpm-testing-socket.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm-testing-socket:${TARGETARCH}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm-testing-socket:${TARGETARCH}"]
 }
 
 // Individual postgres version targets
@@ -124,7 +126,7 @@ target "postgres-13" {
         VERSION = "13"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:13-${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:13-${TARGETARCH}"]
 }
 
 target "postgres-14" {
@@ -134,7 +136,7 @@ target "postgres-14" {
         VERSION = "14"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:14-${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:14-${TARGETARCH}"]
 }
 
 target "postgres-15" {
@@ -144,7 +146,7 @@ target "postgres-15" {
         VERSION = "15"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:15-${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:15-${TARGETARCH}"]
 }
 
 target "postgres-16" {
@@ -154,7 +156,7 @@ target "postgres-16" {
         VERSION = "16"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:16-${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:16-${TARGETARCH}"]
 }
 
 target "postgres-17" {
@@ -164,7 +166,7 @@ target "postgres-17" {
         VERSION = "17"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:17-${TARGETARCH}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:17-${TARGETARCH}"]
 }
 
 // Individual postgres multiarch version targets
@@ -175,7 +177,7 @@ target "postgres-multiarch-13" {
         VERSION = "13"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:13"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:13"]
 }
 
 target "postgres-multiarch-14" {
@@ -185,7 +187,7 @@ target "postgres-multiarch-14" {
         VERSION = "14"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:14"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:14"]
 }
 
 target "postgres-multiarch-15" {
@@ -195,7 +197,7 @@ target "postgres-multiarch-15" {
         VERSION = "15"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:15"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:15"]
 }
 
 target "postgres-multiarch-16" {
@@ -205,7 +207,7 @@ target "postgres-multiarch-16" {
         VERSION = "16"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:16"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:16"]
 }
 
 target "postgres-multiarch-17" {
@@ -215,75 +217,75 @@ target "postgres-multiarch-17" {
         VERSION = "17"
         POSTGRES_LOCALE = "C.UTF-8"
     }
-    tags = ["${REGISTRY_PREFIX}postgres:17"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}postgres:17"]
 }
 
 // Multiarch variants for basic images
 target "scratch-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "scratch.dockerfile"
-    tags = ["${REGISTRY_PREFIX}scratch:${LATEST_TAG}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}scratch:${LATEST_TAG}"]
 }
 
 target "bun-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "bun.dockerfile"
-    tags = ["${REGISTRY_PREFIX}bun:${LATEST_TAG}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}bun:${LATEST_TAG}"]
 }
 
 target "nginx-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "nginx.dockerfile"
-    tags = ["${REGISTRY_PREFIX}nginx:${LATEST_TAG}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}nginx:${LATEST_TAG}"]
 }
 
 target "node-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "node.dockerfile"
-    tags = ["${REGISTRY_PREFIX}node:${LATEST_TAG}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}node:${LATEST_TAG}"]
 }
 
 target "cron-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "cron.dockerfile"
-    tags = ["${REGISTRY_PREFIX}cron:${LATEST_TAG}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}cron:${LATEST_TAG}"]
 }
 
 target "curl-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "curl.dockerfile"
-    tags = ["${REGISTRY_PREFIX}curl:${LATEST_TAG}"]
+    tags = ["${REGISTRY_PREFIX}${IMAGE_PREFIX}curl:${LATEST_TAG}"]
 }
 
 // PHP multiarch variants
 target "php-fpm-base-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "php-fpm-base.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm-base:${LATEST_TAG}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm-base:${LATEST_TAG}"]
 }
 
 target "php-fpm-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "php-fpm.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm:${LATEST_TAG}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm:${LATEST_TAG}"]
 }
 
 target "php-fpm-testing-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "php-fpm-testing.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm-testing:${LATEST_TAG}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm-testing:${LATEST_TAG}"]
 }
 
 target "php-fpm-socket-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "php-fpm-socket.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm-socket:${LATEST_TAG}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm-socket:${LATEST_TAG}"]
 }
 
 target "php-fpm-testing-socket-multiarch" {
     inherits = ["common", "multiarch-base"]
     dockerfile = "php-fpm-testing-socket.dockerfile"
-    tags = ["${PHP_REGISTRY_PREFIX}fpm-testing-socket:${LATEST_TAG}"]
+    tags = ["${PHP_REGISTRY_PREFIX}${PHP_IMAGE_PREFIX}fpm-testing-socket:${LATEST_TAG}"]
 }
 
 // Groups

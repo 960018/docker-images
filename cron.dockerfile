@@ -15,7 +15,7 @@ COPY    --chmod=0755 global/wait-for-it.sh /usr/local/bin/wait-for-it
 COPY    --chmod=0755 cron/update_crontab.sh /usr/local/bin/update_crontab
 COPY    --chmod=0755 cron/entrypoint.sh /usr/local/bin/entrypoint
 
-COPY    --from=docker:27-dind-rootless --chmod=0755 /usr/local/bin/docker /usr/local/bin/docker
+COPY    --from=docker:28-dind-rootless --chmod=0755 /usr/local/bin/docker /usr/local/bin/docker
 
 VOLUME  ["/var/run/docker.sock"]
 
