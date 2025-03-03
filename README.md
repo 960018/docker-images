@@ -65,3 +65,28 @@ Each workflow:
 
 Images are published to GitHub Container Registry (ghcr.io) prefix:
 - `ghcr.io/960018/` - For all images
+
+### Local vs Workflow Builds
+
+The build system automatically handles image tagging differently based on the build environment:
+
+#### Workflow Builds
+When building in GitHub Actions:
+- Images use the standard registry prefix: `ghcr.io/960018/`
+- Example: `ghcr.io/960018/nginx:latest`
+
+#### Local Builds
+When building locally:
+- Images are automatically prefixed with "local:"
+- Example: `local:ghcr.io/960018/nginx:latest`
+
+This distinction helps prevent confusion between locally built images and official releases.
+
+To override this behavior, you can set the IS_GITHUB_ACTIONS variable:
+```bash
+# Force workflow-style tags locally
+docker buildx bake --set *.args.IS_GITHUB_ACTIONS=true target-name
+
+# Force local-style tags
+docker buildx bake --set *.args.IS_GITHUB_ACTIONS=false target-name
+```

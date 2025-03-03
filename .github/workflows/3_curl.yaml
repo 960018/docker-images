@@ -58,6 +58,7 @@ jobs:
                     set: |
                         *.platform=linux/${{ matrix.arch }}
                         *.args.TARGETARCH=${{ matrix.arch }}
+                        *.args.IS_GITHUB_ACTIONS=true
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -89,6 +90,7 @@ jobs:
                     push: true
                     set: |
                         *.args.LATEST_TAG=${{ env.LATEST_TAG }}
+                        *.args.IS_GITHUB_ACTIONS=true
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:

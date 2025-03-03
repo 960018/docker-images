@@ -1,6 +1,6 @@
-ARG     VERSION
-
-FROM    postgres:${VERSION}-bookworm
+ARG     VERSION=17
+ARG     POSTGRES_IMAGE=postgres:${VERSION}-bookworm
+FROM    ${POSTGRES_IMAGE}
 
 SHELL   ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -13,15 +13,14 @@ COPY    global/compress   /etc/initramfs-tools/conf.d/compress
 COPY    global/modules    /etc/initramfs-tools/conf.d/modules
 COPY    global/90parallel /etc/apt/apt.conf.d/90parallel
 
-ARG     POSTGRES_LOCALE=en_US
+ARG     POSTGRES_LOCALE=C.UTF-8
 
 USER    root
 RUN     chown -R postgres:postgres /var/lib/postgresql/
-RUN     localedef -i $POSTGRES_LOCALE -c -f UTF-8 -A /usr/share/locale/locale.alias ${POSTGRES_LOCALE}.UTF-8
 
 USER    postgres
 
-ENV     POSTGRES_INITDB_ARGS="--lc-collate=${POSTGRES_LOCALE}.utf8 --lc-ctype=${POSTGRES_LOCALE}.utf8"
+ENV     POSTGRES_INITDB_ARGS="--lc-collate=${POSTGRES_LOCALE} --lc-ctype=${POSTGRES_LOCALE}"
 
 USER    root
 

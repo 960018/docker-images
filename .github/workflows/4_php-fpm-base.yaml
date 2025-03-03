@@ -59,6 +59,7 @@ jobs:
                         *.platform=linux/${{ matrix.arch }}
                         *.args.TARGETARCH=${{ matrix.arch }}
                         *.args.PHP_COMMIT_HASH=${{ steps.clone.outputs.source_commit_hash }}
+                        *.args.IS_GITHUB_ACTIONS=true
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -90,6 +91,7 @@ jobs:
                     push: true
                     set: |
                         *.args.LATEST_TAG=${{ env.LATEST_TAG }}
+                        *.args.IS_GITHUB_ACTIONS=true
             -   name: dispatch
                 uses: peter-evans/repository-dispatch@v3
                 with:
