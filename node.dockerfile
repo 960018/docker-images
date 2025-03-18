@@ -46,11 +46,9 @@ RUN     \
             /root/.npm \
             /root/.cache \
 &&      usermod -a -G dialout vairogs \
-&&      npm i -g npm@next-11 \
+&&      npm i -g npm@latest \
 &&      npm i -g n@latest \
-&&      corepack enable \
-&&      corepack prepare yarn@stable --activate \
-&&      echo "Y" | yarn -v \
+&&      npm i -g pnpm@latest \
 &&      chown -R vairogs:vairogs /home/vairogs \
 &&      chown -R vairogs:vairogs /usr/local/lib/node_modules \
 &&      chmod -R 755 /usr/local/lib/node_modules
