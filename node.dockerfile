@@ -51,7 +51,12 @@ RUN     \
 &&      npm i -g pnpm@latest \
 &&      chown -R vairogs:vairogs /home/vairogs \
 &&      chown -R vairogs:vairogs /usr/local/lib/node_modules \
-&&      chmod -R 755 /usr/local/lib/node_modules
+&&      chmod -R 755 /usr/local/lib/node_modules \
+&&      mkdir --parents /usr/local/n \
+&&      chown -R vairogs:vairogs /usr/local/n \
+&&      chown -R vairogs:vairogs /usr/local/include \
+&&      chown -R vairogs:vairogs /usr/local/share \
+&&      chown -R vairogs:vairogs /usr/local/bin
 
 RUN echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
 
