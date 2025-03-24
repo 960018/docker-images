@@ -49,7 +49,7 @@ jobs:
                     push: true
                     no-cache: true
                     provenance: true
-                    sbom: true
+                    sbom: false
                     tags: ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ matrix.arch }}
             -   name: build postgres
                 run: |
