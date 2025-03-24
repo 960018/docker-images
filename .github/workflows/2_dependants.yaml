@@ -46,17 +46,22 @@ jobs:
                     push: true
                     no-cache: true
                     provenance: true
-                    sbom: true
+                    sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.NODE_NAME }}:${{ matrix.arch }}
             -   name: build similar
                 run: |
                     for build_name in ${{ env.SIMILAR }}; do
+                        SBOM_FLAG=""
+                        if [ "${{ matrix.arch }}" = "amd64" ]; then
+                            SBOM_FLAG="--sbom=true"
+                        fi
+                    
                         docker buildx build \
                             --file ${build_name}.dockerfile \
                             --push \
                             --no-cache \
                             --provenance=true \
-                            --sbom=true \
+                            ${SBOM_FLAG} \
                             --tag ${{ env.OWNER }}/${build_name}:${{ matrix.arch }} \
                             .
                     done

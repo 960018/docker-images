@@ -49,17 +49,22 @@ jobs:
                     push: true
                     no-cache: true
                     provenance: true
-                    sbom: false
+                    sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ matrix.arch }}
             -   name: build postgres
                 run: |
                     for version in ${{ env.POSTGRES_VERSIONS }}; do
+                        SBOM_FLAG=""
+                        if [ "${{ matrix.arch }}" = "amd64" ]; then
+                            SBOM_FLAG="--sbom=true"
+                        fi
+
                         docker buildx build \
                             --file ${{ env.POSTGRES_NAME }}.dockerfile \
                             --push \
                             --no-cache \
                             --provenance=true \
-                            --sbom=true \
+                            ${SBOM_FLAG} \
                             --build-arg VERSION=${version} \
                             --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-${{ matrix.arch }} \
                             .

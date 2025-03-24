@@ -78,7 +78,7 @@ jobs:
                     push: true
                     no-cache: true
                     provenance: true
-                    sbom: true
+                    sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
