@@ -23,6 +23,7 @@ RUN    \
 &&      apt-get install -y --no-install-recommends --allow-downgrades make libc-dev libc6-dev gcc g++ cpp git dpkg-dev autoconf fontconfig
 
 COPY    php/xdebug/ /tmp/extensions/xdebug/
+COPY    php/vmemo/ /tmp/extensions/vmemo/
 
 RUN     \
         set -eux \

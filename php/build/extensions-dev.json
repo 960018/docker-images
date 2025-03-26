@@ -10,5 +10,10 @@
             "echo xdebug.start_with_request=trigger >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini",
             "echo xdebug.log=/tmp/xdebug.log >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini"
         ]
+    },
+    "vmemo": {
+        "source": "/tmp/extensions/vmemo/",
+        "enable": true,
+        "configure": "--enable-vmemo"
     }
 }

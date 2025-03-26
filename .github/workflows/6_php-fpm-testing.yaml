@@ -40,19 +40,27 @@ jobs:
                 run: |
                     clone_repo() {
                         cd php
-                        git clone --single-branch $1 $2
+                        if [[ "$3" == "private" ]]; then
+                            # For private repositories, use token authentication
+                            REPO_URL="https://${{ secrets.GH_TOKEN }}@${1#https://}"
+                            git clone --single-branch "$REPO_URL" $2
+                        else
+                            # For public repositories, use the URL as is
+                            git clone --single-branch $1 $2
+                        fi
                         cd $2
                         git submodule update --init --force
-                    
+
                         COMMIT_HASH=$(git rev-parse HEAD)
-                    
+
                         rm -rf .git .github
                         cd ../..
-                    
+
                         echo "${2}_commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
                     }
                     clone_repo https://github.com/fork-php/php-src.git source
                     clone_repo https://github.com/fork-php/xdebug.git xdebug
+                    clone_repo https://github.com/vairogs/vmemo.git vmemo private
             -   name: build php-fpm testing
                 uses: docker/build-push-action@v6
                 with:
