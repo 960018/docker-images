@@ -14,6 +14,10 @@
     "vmemo": {
         "source": "/tmp/extensions/vmemo/",
         "enable": true,
-        "configure": "--enable-vmemo"
+        "configure": "--enable-vmemo",
+        "scripts": [
+            "echo vmemo.clear_cache_on_request_end = 0 >> /usr/local/etc/php/conf.d/docker-php-ext-vmemo.ini",
+            "echo vmemo.debug = 1 >> /usr/local/etc/php/conf.d/docker-php-ext-vmemo.ini"
+        ]
     }
 }
