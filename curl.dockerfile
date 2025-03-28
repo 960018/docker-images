@@ -59,13 +59,13 @@ RUN     \
 &&      ./configure --enable-session-ticket --enable-earlydata --enable-psk --enable-altcertchains --disable-examples \
                     --enable-dtls --enable-sctp --enable-opensslextra --enable-opensslall --enable-sniffer --enable-sha512 \
                     --enable-ed25519 --enable-rsapss --enable-base64encode --enable-tlsx --enable-scrypt --disable-crypttests \
-                    --enable-fastmath --enable-harden --enable-quic --enable-all --enable-experimental \
+                    --enable-fastmath --enable-harden --enable-quic --enable-experimental \
                     --enable-chacha --enable-alpn --enable-certgen --enable-certreq --enable-ecc --enable-dtls-mtu \
                     --enable-curve25519 --enable-pkcs11 --enable-sp --enable-heapmath \
                     --enable-certgencache --enable-dilithium --enable-iopool --enable-wolfsentry \
                     --enable-wpas --enable-haproxy --enable-libssh2 --enable-signal --enable-openldap --enable-memcached \
                     --enable-mosquitto --enable-dtls13 --enable-secure-renegotiation --enable-wolftpm --enable-rwlock \
-                    --enable-libwebsockets --enable-dtls-frag-ch --disable-aes --disable-fortress \
+                    --enable-libwebsockets --enable-dtls-frag-ch --disable-aes \
 &&      make \
 &&      make install \
 &&      cd ../ngtcp2 \
