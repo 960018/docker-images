@@ -60,7 +60,7 @@ jobs:
                     }
                     clone_repo https://github.com/fork-php/php-src.git source
                     clone_repo https://github.com/fork-php/xdebug.git xdebug
-                    clone_repo https://github.com/vairogs/vmemo.git vmemo private
+                    clone_repo https://github.com/ozo2003/aspect.git aspect
             -   name: build php-fpm testing
                 uses: docker/build-push-action@v6
                 with:

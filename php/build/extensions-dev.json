@@ -11,15 +11,9 @@
             "echo xdebug.log=/tmp/xdebug.log >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini"
         ]
     },
-    "vmemo": {
-        "source": "/tmp/extensions/vmemo/",
+    "aspect": {
+        "source": "/tmp/extensions/aspect/",
         "enable": true,
-        "configure": "--enable-vmemo",
-        "scripts": [
-            "echo vmemo.clear_cache_on_request_end = 0 >> /usr/local/etc/php/conf.d/docker-php-ext-vmemo.ini",
-            "echo vmemo.debug = 1 >> /usr/local/etc/php/conf.d/docker-php-ext-vmemo.ini"
-        ],
-        "req": "libicu76 libicu-dev",
-        "remove": "libicu-dev"
+        "configure": "--enable-aspect"
     }
 }

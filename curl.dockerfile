@@ -65,7 +65,7 @@ RUN     \
                     --enable-certgencache --enable-dilithium --enable-iopool --enable-wolfsentry \
                     --enable-wpas --enable-haproxy --enable-libssh2 --enable-signal --enable-openldap --enable-memcached \
                     --enable-mosquitto --enable-dtls13 --enable-secure-renegotiation --enable-wolftpm --enable-rwlock \
-                    --enable-libwebsockets --enable-dtls-frag-ch \
+                    --enable-libwebsockets --enable-dtls-frag-ch --disable-aes \
 &&      make \
 &&      make install \
 &&      cd ../ngtcp2 \
