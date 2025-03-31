@@ -77,7 +77,7 @@ RUN     \
 &&      autoreconf -fi \
 &&      ./configure CFLAGS='-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native' --prefix=/usr/local \
             --with-wolfssl --with-zlib --with-brotli --enable-ipv6 --with-libidn2 --enable-sspi --with-librtmp --with-ngtcp2 --with-nghttp3 --with-nghttp2 --enable-websockets --with-zstd --disable-manual --disable-docs \
-            --enable-ech --with-libssh2 --enable-ldap --enable-ldaps \
+            --with-libssh2 --enable-ldap --enable-ldaps \
 &&      make \
 &&      make install \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false libbrotli-dev git cmake make automake autoconf libtool gcc g++ libzstd-dev libssl-dev librtmp-dev krb5-multidev libcrypt-dev libnsl-dev libtirpc-dev linux-libc-dev comerr-dev perl libnghttp3-dev \
