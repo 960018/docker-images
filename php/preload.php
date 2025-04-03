@@ -23,7 +23,7 @@ if ('cli' !== PHP_SAPI && bool($_ENV['ENABLE_PRELOAD'] ?? true)) {
             $path = '/var/cache/prod/';
             $filename = 'App_KernelProdContainer.preload.php';
 
-            if (!is_dir($long = $prefix . '/api' . $path)) {
+            if (!is_dir($long = $prefix . ($_ENV['CUSTOM_PRELOAD_PREFIX'] ?? '/custom') . $path)) {
                 $long = null;
             }
 
