@@ -1,0 +1,2 @@
+curl/*
+!curl/env_entrypoint.sh

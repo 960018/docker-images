@@ -52,7 +52,7 @@ jobs:
                     clone_repo https://github.com/curl/curl.git source
                     clone_repo https://github.com/ngtcp2/nghttp3.git nghttp3
                     clone_repo https://github.com/ngtcp2/ngtcp2.git ngtcp2
-                    clone_repo https://github.com/wolfSSL/wolfssl.git wolfssl
+                    clone_repo https://github.com/960018/wolfssl.git wolfssl
             -   name: build curl
                 uses: docker/build-push-action@v6
                 with:

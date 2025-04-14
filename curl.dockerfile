@@ -56,7 +56,7 @@ RUN     \
 &&      make install \
 &&      cd ../wolfssl \
 &&      autoreconf -fi \
-&&      CFLAGS="-DWOLFSSL_NO_STRICT" ./configure \
+&&      CFLAGS="-DWOLFSSL_NO_STRICT -DWOLFSSL_NO_ASN_STRICT" ./configure \
           --disable-crypttests \
           --disable-examples \
           --disable-lighty \
@@ -88,12 +88,12 @@ RUN     \
 &&      make install \
 &&      cd ../ngtcp2 \
 &&      autoreconf -fi \
-&&      ./configure LDFLAGS="-Wl,-rpath,/usr/local/lib" --prefix=/usr/local --with-wolfssl --enable-lib-only \
+&&      CFLAGS="-DWOLFSSL_NO_STRICT -DWOLFSSL_NO_ASN_STRICT" ./configure LDFLAGS="-Wl,-rpath,/usr/local/lib" --prefix=/usr/local --with-wolfssl --with-crypto-backend=wolfssl --enable-lib-only \
 &&      make \
 &&      make install \
 &&      cd ../curl \
 &&      autoreconf -fi \
-&&      ./configure CFLAGS='-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native' --prefix=/usr/local \
+&&      ./configure CFLAGS='-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native -DWOLFSSL_NO_STRICT -DWOLFSSL_NO_ASN_STRICT' --prefix=/usr/local \
             --with-wolfssl --with-zlib --with-brotli --enable-ipv6 --with-libidn2 --enable-sspi --with-librtmp --with-ngtcp2 --with-nghttp3 --with-nghttp2 --enable-websockets --with-zstd --disable-manual --disable-docs \
             --with-libssh2 --enable-ldap --enable-ldaps \
 &&      make \
