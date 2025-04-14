@@ -59,7 +59,7 @@ RUN     \
 &&      ./configure --enable-session-ticket --enable-earlydata --enable-psk --enable-altcertchains --disable-examples \
                     --enable-dtls --enable-sctp --enable-opensslextra --enable-opensslall --enable-sniffer --enable-sha512 \
                     --enable-ed25519 --enable-rsapss --enable-base64encode --enable-tlsx --enable-scrypt --disable-crypttests \
-                    --enable-fastmath --enable-harden --enable-quic --enable-experimental \
+                    --enable-fastmath --enable-harden --enable-quic --enable-all --enable-experimental \
                     --enable-chacha --enable-alpn --enable-certgen --enable-certreq --enable-ecc --enable-dtls-mtu \
                     --enable-curve25519 --enable-pkcs11 --enable-sp --enable-heapmath \
                     --enable-certgencache --enable-dilithium --enable-iopool --enable-wolfsentry \
