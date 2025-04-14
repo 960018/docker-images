@@ -48,7 +48,7 @@ RUN     \
 &&      apt-get update \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends make automake autoconf libtool ca-certificates gcc g++ libbrotli1 libbrotli-dev zstd libzstd-dev librtmp-dev librtmp1 rtmpdump pkg-config \
-        libgsasl-dev libgsasl18 libpsl-dev perl libnghttp2-dev nghttp2 libssl-dev libssl3t64 libpsl5t64 libssh2-1-dev libssh2-1t64 libldap-dev libldap2-dev libldap-common libldap-2.5-0 \
+        libgsasl-dev libgsasl18 libpsl-dev perl libnghttp2-dev nghttp2 libssl-dev libssl3t64 libpsl5t64 libssh2-1-dev libssh2-1t64 libldap-dev libldap2-dev libldap-common libldap-2.5-0 libldap2 \
 &&      cd nghttp3 \
 &&      autoreconf -fi \
 &&      ./configure --prefix=/usr/local --enable-lib-only \
@@ -56,16 +56,34 @@ RUN     \
 &&      make install \
 &&      cd ../wolfssl \
 &&      autoreconf -fi \
-&&      ./configure --enable-session-ticket --enable-earlydata --enable-psk --enable-altcertchains --disable-examples \
-                    --enable-dtls --enable-sctp --enable-opensslextra --enable-opensslall --enable-sniffer --enable-sha512 \
-                    --enable-ed25519 --enable-rsapss --enable-base64encode --enable-tlsx --enable-scrypt --disable-crypttests \
-                    --enable-fastmath --enable-harden --enable-quic --enable-all --enable-experimental \
-                    --enable-chacha --enable-alpn --enable-certgen --enable-certreq --enable-ecc --enable-dtls-mtu \
-                    --enable-curve25519 --enable-pkcs11 --enable-sp --enable-heapmath \
-                    --enable-certgencache --enable-dilithium --enable-iopool --enable-wolfsentry \
-                    --enable-wpas --enable-haproxy --enable-libssh2 --enable-signal --enable-openldap --enable-memcached \
-                    --enable-mosquitto --enable-dtls13 --enable-secure-renegotiation --enable-wolftpm --enable-rwlock \
-                    --enable-libwebsockets --enable-dtls-frag-ch \
+&&      CFLAGS="-DWOLFSSL_NO_STRICT" ./configure \
+          --disable-crypttests \
+          --disable-examples \
+          --disable-lighty \
+          --disable-sniffer \
+          --disable-wpas \
+          --enable-alpn \
+          --enable-altcertchains \
+          --enable-base64encode \
+          --enable-certgen \
+          --enable-certgencache \
+          --enable-certreq \
+          --enable-chacha \
+          --enable-curve25519 \
+          --enable-earlydata \
+          --enable-ecc \
+          --enable-ed25519 \
+          --enable-fastmath \
+          --enable-openldap \
+          --enable-opensslall \
+          --enable-opensslextra \
+          --enable-psk \
+          --enable-quic \
+          --enable-rsapss \
+          --enable-secure-renegotiation \
+          --enable-session-ticket \
+          --enable-sha512 \
+          --enable-tlsx \
 &&      make \
 &&      make install \
 &&      cd ../ngtcp2 \
