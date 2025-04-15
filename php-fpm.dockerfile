@@ -46,8 +46,8 @@ COPY    php/igbinary/ /tmp/extensions/igbinary/
 COPY    php/imagick/ /tmp/extensions/imagick/
 COPY    php/mediawiki-php-excimer/ /tmp/extensions/mediawiki-php-excimer/
 COPY    php/msgpack-php/ /tmp/extensions/msgpack-php/
-COPY    php/pecl-event/ /tmp/extensions/pecl-event/
 COPY    php/pecl-ev/ /tmp/extensions/pecl-ev/
+COPY    php/pecl-event/ /tmp/extensions/pecl-event/
 COPY    php/pecl-file_formats-lzf/ /tmp/extensions/pecl-file_formats-lzf/
 COPY    php/pecl-networking-uuid/ /tmp/extensions/pecl-networking-uuid/
 COPY    php/php-ext-lz4/ /tmp/extensions/php-ext-lz4/
