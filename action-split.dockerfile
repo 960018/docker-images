@@ -19,6 +19,7 @@ RUN     \
         set -eux \
 &&      apt-get update \
 &&      apt-get install -y --no-install-recommends git jq wget ca-certificates \
-&&      rm -rf /var/lib/apt/lists/*
+&&      rm -rf /var/lib/apt/lists/* \
+&&      chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
