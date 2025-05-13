@@ -12,6 +12,7 @@ A collection of Docker images for various services and applications, built for b
 - **node**: Node.js runtime environment
 - **php**: PHP environment with several variants (fpm, fpm-socket, fpm-testing, etc.)
 - **postgres**: PostgreSQL database (versions 13, 14, 15, 16, 17)
+- **action-split**: Monorepo splitter that can be used in actions (https://github.com/ozo2003/split)
 
 ## Usage
 
