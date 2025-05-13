@@ -1,0 +1,79 @@
+name: build split action
+run-name: build split action
+
+on:
+    repository_dispatch:
+        types: [ php-fpm-socket ]
+
+env:
+    EVENT: split
+    LATEST_TAG: latest
+    SPLIT_NAME: action-split
+    OWNER: ghcr.io/960018
+
+jobs:
+
+    build:
+        strategy:
+            matrix:
+                arch: [ amd64, arm64 ]
+                include:
+                    -   arch: amd64
+                        os: self-amd64
+                    -   arch: arm64
+                        os: self-arm64
+        runs-on: ${{ matrix.os }}
+        steps:
+            -   name: login
+                uses: docker/login-action@v3
+                with:
+                    registry: ghcr.io
+                    username: ${{ github.repository_owner }}
+                    password: ${{ secrets.GH_TOKEN }}
+            -   name: checkout
+                uses: actions/checkout@v4
+            -   name: buildkit
+                uses: docker/setup-buildx-action@v3
+                with:
+                    driver-opts: image=moby/buildkit:master-rootless
+            -   name: build action
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.SPLIT_NAME }}.dockerfile
+                    push: true
+                    no-cache: true
+                    provenance: true
+                    sbom: ${{ matrix.arch == 'amd64' }}
+                    tags: ${{ env.OWNER }}/${{ env.SPLIT_NAME }}:${{ matrix.arch }}
+            -   name: cleanup
+                run: |
+                    ls -la ./
+                    rm -rf ./* || true
+                    rm -rf ./.??* || true
+                    ls -la ./
+                    docker builder prune -af
+
+    multiarch:
+        runs-on: ubuntu-latest
+        needs: [ build ]
+        steps:
+            -   name: login
+                uses: docker/login-action@v3
+                with:
+                    registry: ghcr.io
+                    username: ${{ github.repository_owner }}
+                    password: ${{ secrets.GH_TOKEN }}
+            -   name: buildkit
+                uses: docker/setup-buildx-action@v3
+                with:
+                    driver-opts: image=moby/buildkit:master-rootless
+            -   name: multiarch
+                run: |
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.SPLIT_NAME }}:amd64 ${{ env.OWNER }}/${{ env.SPLIT_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.SPLIT_NAME }}:${{ env.LATEST_TAG }}
+            -   name: dispatch
+                uses: peter-evans/repository-dispatch@v3
+                with:
+                    event-type: ${{ env.EVENT }}
+                    token: ${{ secrets.GH_TOKEN }}
+                    repository: 960018/docker-images
