@@ -43,7 +43,7 @@ jobs:
                 run: |
                     set -eux
                     GO_VERSION=$(curl -sSL https://go.dev/VERSION?m=text | head -n1 | sed 's/^go//' | xargs)
-                    echo "GO_VERSION=$GO_VERSION" >> >> $GITHUB_OUTPUT
+                    echo "GO_VERSION=$GO_VERSION" >> $GITHUB_OUTPUT
                     ARCH=${{ matrix.arch }}
                     URL="https://dl.google.com/go/go${GO_VERSION}.linux-${ARCH}.tar.gz"
                     
