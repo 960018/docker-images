@@ -58,7 +58,7 @@ RUN     \
 &&      chown -R vairogs:vairogs /usr/local/share \
 &&      chown -R vairogs:vairogs /usr/local/bin
 
-RUN echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
+RUN     echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
 
 USER    vairogs
 

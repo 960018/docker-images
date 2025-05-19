@@ -45,7 +45,7 @@ RUN     \
             /root/.cache \
 &&      usermod -a -G dialout vairogs
 
-RUN echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
+RUN     echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
 
 USER    vairogs
 

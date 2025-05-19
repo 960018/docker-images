@@ -92,7 +92,7 @@ RUN     \
             /usr/lib/python3.12/__phello__ \
             /usr/lib/python3.12/__hello__.py
 
-RUN echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
+RUN     echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
 
 USER    vairogs
 
