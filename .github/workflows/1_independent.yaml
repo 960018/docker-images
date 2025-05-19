@@ -72,6 +72,7 @@ jobs:
                     build-args: |
                         CACHE_BUSTER=${{ github.run_id }}
             -   name: build postgres
+                if: ${{ github.event.client_payload.skip_postgres != true }}
                 env:
                     NO_CACHE: ${{ github.event.client_payload.no_cache || 'false' }}
                 run: |

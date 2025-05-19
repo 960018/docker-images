@@ -10,9 +10,7 @@ if [ -z "$REEXEC_DONE" ]; then
     else
         sudo groupadd -o -g "$SOCK_GID" tempdocker 2>/dev/null || true
         sudo usermod -aG "$SOCK_GID" "$(whoami)" || true
-
-        export REEXEC_DONE=1
-        exec su - "$(whoami)" -c "exec \"$0\" \"$@\""
+        exec su - "$(whoami)" -c "REEXEC_DONE=1 exec \"$0\" \"$@\""
     fi
 fi
 
