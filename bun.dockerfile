@@ -65,3 +65,5 @@ ARG     BUN_INSTALL_BIN=/usr/local/bin
 ENV     BUN_INSTALL_BIN=${BUN_INSTALL_BIN}
 
 COPY    --from=builder / /
+
+WORKDIR /home/vairogs

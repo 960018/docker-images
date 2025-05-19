@@ -48,3 +48,5 @@ RUN     \
 FROM    ghcr.io/960018/scratch:latest
 
 COPY    --from=builder / /
+
+WORKDIR /home/vairogs

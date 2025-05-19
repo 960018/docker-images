@@ -5,6 +5,8 @@ ENV     DEBIAN_FRONTEND=noninteractive
 
 USER    root
 
+WORKDIR /home/vairogs
+
 COPY    curl/source/ /home/vairogs/curl
 COPY    curl/wolfssl/ /home/vairogs/wolfssl
 COPY    curl/ngtcp2/ /home/vairogs/ngtcp2

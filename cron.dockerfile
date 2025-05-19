@@ -8,6 +8,8 @@ COPY    --chmod=0755 cron/entrypoint.sh /usr/local/bin/entrypoint
 
 VOLUME  ["/var/run/docker.sock"]
 
+WORKDIR /home/vairogs
+
 USER    root
 
 RUN     \
