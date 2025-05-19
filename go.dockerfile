@@ -35,3 +35,12 @@ RUN     \
 WORKDIR $GOPATH
 
 USER    vairogs
+
+RUN echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
+
+RUN    \
+        set -eux \
+&&      mkdir --parents /home/vairogs/environment \
+&&      env | sed 's/^\([^=]*\)=\(.*\)$/\1=\2/' >> /home/vairogs/environment/environment.txt
+
+COPY    --chmod=0755 go/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
