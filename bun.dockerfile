@@ -24,7 +24,7 @@ RUN     \
 &&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
 &&      apt-get update \
 &&      apt-get upgrade -y \
-&&      apt-get install -y --no-install-recommends procps unzip iputils-ping \
+&&      apt-get install -y --no-install-recommends procps unzip iputils-ping gosu \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 &&      apt-get autoremove -y --purge \
 &&      rm -rf \

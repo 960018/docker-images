@@ -39,7 +39,7 @@ RUN     \
 &&      apt-get update \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends \
-        apt-utils bash ca-certificates cron git iputils-ping jq pkg-config procps telnet tzdata unzip vim-tiny wget \
+        apt-utils bash ca-certificates cron git gosu iputils-ping jq pkg-config procps telnet tzdata unzip vim-tiny wget \
 &&      chown vairogs:vairogs /usr/local/bin/wait-for-it \
 &&      chmod +x /usr/local/bin/wait-for-it \
 &&      ln -sf /usr/bin/vi /usr/bin/vim \
@@ -50,10 +50,19 @@ RUN     \
             /usr/local/share/man \
             /var/lib/apt/lists/*
 
+RUN     echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
+
+USER    vairogs
+
+RUN    \
+        set -eux \
+&&      mkdir --parents /home/vairogs/environment \
+&&      env | sed 's/^\([^=]*\)=\(.*\)$/\1=\2/' >> /home/vairogs/environment/environment.txt
+
+COPY    --chmod=0755 bun/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
+
 FROM    ghcr.io/960018/scratch:latest
 
 COPY    --from=builder / /
 
 WORKDIR /home/vairogs
-
-ENTRYPOINT []
