@@ -41,11 +41,10 @@ RUN     \
 &&      apt-get update \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends \
-        apt-utils bash ca-certificates cron git gosu iputils-ping jq pkg-config procps telnet tzdata unzip vim-tiny wget \
+        apt-utils bash ca-certificates cron git login iputils-ping jq pkg-config procps telnet tzdata unzip vim-tiny wget \
 &&      chown vairogs:vairogs /usr/local/bin/wait-for-it \
 &&      chmod +x /usr/local/bin/wait-for-it \
 &&      ln -sf /usr/bin/vi /usr/bin/vim \
-&&      chmod +s /usr/sbin/gosu \
 &&      rm -rf \
             /var/cache/* \
             /usr/share/man \

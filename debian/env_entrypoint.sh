@@ -11,7 +11,7 @@ if [ "$(id -u)" = "0" ]; then
         usermod -aG "$SOCK_GID" vairogs || true
     fi
 
-    exec gosu vairogs "$0" "$@"
+    exec su -s /bin/bash vairogs -c "$0 $*"
 fi
 
 exec "$@"
