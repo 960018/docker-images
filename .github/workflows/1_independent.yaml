@@ -52,6 +52,19 @@ jobs:
                     provenance: true
                     sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ matrix.arch }}
+            -   name: build debian
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.DEBIAN_NAME }}.dockerfile
+                    push: true
+                    pull: ${{ github.event.client_payload.no_cache || false }}
+                    provenance: true
+                    sbom: ${{ matrix.arch == 'amd64' }}
+                    tags: ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:${{ matrix.arch }}
+                    no-cache: ${{ github.event.client_payload.no_cache || false }}
+                    build-args: |
+                        CACHE_BUSTER=${{ github.run_id }}
             -   name: build postgres
                 env:
                     NO_CACHE: ${{ github.event.client_payload.no_cache || 'false' }}
@@ -82,19 +95,6 @@ jobs:
                             --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-${{ matrix.arch }} \
                             .
                     done
-            -   name: build debian
-                uses: docker/build-push-action@v6
-                with:
-                    context: .
-                    file: ${{ env.DEBIAN_NAME }}.dockerfile
-                    push: true
-                    pull: ${{ github.event.client_payload.no_cache || false }}
-                    provenance: true
-                    sbom: ${{ matrix.arch == 'amd64' }}
-                    tags: ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:${{ matrix.arch }}
-                    no-cache: ${{ github.event.client_payload.no_cache || false }}
-                    build-args: |
-                        CACHE_BUSTER=${{ github.run_id }}
             -   name: cleanup
                 run: |
                     ls -la ./
