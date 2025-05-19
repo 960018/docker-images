@@ -72,6 +72,7 @@ jobs:
                 run: |
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.SPLIT_NAME }}:amd64 ${{ env.OWNER }}/${{ env.SPLIT_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.SPLIT_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
+                if: ${{ github.event.client_payload.skip_dispatch != true }}
                 uses: peter-evans/repository-dispatch@v3
                 with:
                     event-type: ${{ env.EVENT }}
