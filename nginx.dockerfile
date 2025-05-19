@@ -69,3 +69,5 @@ WORKDIR /var/www/html
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 CMD     ["nginx", "-g", "daemon off;"]
+
+USER    vairogs

@@ -74,3 +74,5 @@ FROM    ghcr.io/960018/scratch:latest
 COPY    --from=builder / /
 
 CMD     ["node"]
+
+USER    vairogs

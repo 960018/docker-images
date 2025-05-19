@@ -44,3 +44,5 @@ RUN    \
 &&      env | sed 's/^\([^=]*\)=\(.*\)$/\1=\2/' >> /home/vairogs/environment/environment.txt
 
 COPY    --chmod=0755 go/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
+
+USER    root

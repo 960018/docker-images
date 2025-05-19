@@ -22,6 +22,7 @@ COPY    global/90parallel /etc/apt/apt.conf.d/90parallel
 ARG     POSTGRES_LOCALE=en_US
 
 USER    root
+
 RUN     chown -R postgres:postgres /var/lib/postgresql/
 RUN     localedef -i $POSTGRES_LOCALE -c -f UTF-8 -A /usr/share/locale/locale.alias ${POSTGRES_LOCALE}.UTF-8
 

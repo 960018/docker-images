@@ -8,10 +8,10 @@ LABEL   org.opencontainers.image.licenses="MIT"
 ENV     container=docker
 ENV     DEBIAN_FRONTEND=noninteractive
 
-USER    vairogs
-
 SHELL   ["/bin/bash", "-o", "pipefail", "-c"]
 
 ENTRYPOINT ["/home/vairogs/env_entrypoint.sh"]
 
 CMD     ["/bin/bash"]
+
+USER    root
