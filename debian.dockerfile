@@ -45,6 +45,7 @@ RUN     \
 &&      chown vairogs:vairogs /usr/local/bin/wait-for-it \
 &&      chmod +x /usr/local/bin/wait-for-it \
 &&      ln -sf /usr/bin/vi /usr/bin/vim \
+&&      chmod +x /usr/sbin/gosu \
 &&      rm -rf \
             /var/cache/* \
             /usr/share/man \
