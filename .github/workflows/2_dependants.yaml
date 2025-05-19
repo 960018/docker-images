@@ -49,7 +49,7 @@ jobs:
                     
                     mkdir -p go-root
                     curl -sSL "$URL" | tar -xz -C go-root
-            -   name: build node
+            -   name: build go
                 uses: docker/build-push-action@v6
                 with:
                     context: .
