@@ -1,5 +1,7 @@
 FROM    ghcr.io/960018/curl:latest AS builder
 
+ARG     CACHE_BUSTER=default
+
 ARG     PHP_COMMIT_HASH
 ARG     ARCH
 

@@ -1,5 +1,7 @@
 FROM    ghcr.io/960018/debian:latest AS builder
 
+ARG     CACHE_BUSTER=default
+
 ENV     container=docker
 ENV     DEBIAN_FRONTEND=noninteractive
 

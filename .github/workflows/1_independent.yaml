@@ -131,3 +131,4 @@ jobs:
                     event-type: ${{ env.EVENT }}
                     token: ${{ secrets.GH_TOKEN }}
                     repository: 960018/docker-images
+                    client-payload: '{"no_cache": "${{ github.event.client_payload.no_cache || false }}"}'

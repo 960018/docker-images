@@ -43,20 +43,26 @@ jobs:
                     context: .
                     file: php-${{ env.PHP_NAME }}.dockerfile
                     push: true
-                    no-cache: true
+                    no-cache: ${{ github.event.client_payload.no_cache || false }}
+                    pull: ${{ github.event.client_payload.no_cache || false }}
                     provenance: true
                     sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ matrix.arch }}
+                    build-args: |
+                        CACHE_BUSTER=${{ github.run_id }}
             -   name: build php-fpm testing socket
                 uses: docker/build-push-action@v6
                 with:
                     context: .
                     file: php-${{ env.PHP_NAME_TESTTING }}.dockerfile
                     push: true
-                    no-cache: true
+                    no-cache: ${{ github.event.client_payload.no_cache || false }}
+                    pull: ${{ github.event.client_payload.no_cache || false }}
                     provenance: true
                     sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.PHP_NAME_TESTTING }}:${{ matrix.arch }}
+                    build-args: |
+                        CACHE_BUSTER=${{ github.run_id }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -90,3 +96,4 @@ jobs:
                     event-type: ${{ env.EVENT }}
                     token: ${{ secrets.GH_TOKEN }}
                     repository: 960018/docker-images
+                    client-payload: '{"no_cache": "${{ github.event.client_payload.no_cache || false }}"}'

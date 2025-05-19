@@ -1,5 +1,7 @@
 FROM    ghcr.io/960018/php/fpm:latest AS builder
 
+ARG     CACHE_BUSTER=default
+
 USER    root
 
 ENV     PHP_VERSION=8.5.0-dev

@@ -1,5 +1,7 @@
 FROM    ghcr.io/960018/php/fpm:latest
 
+ARG     CACHE_BUSTER=default
+
 USER    root
 
 RUN     \

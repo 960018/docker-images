@@ -55,12 +55,14 @@ jobs:
                     context: .
                     file: ${{ env.GO_NAME }}.dockerfile
                     push: true
-                    no-cache: true
+                    no-cache: ${{ github.event.client_payload.no_cache || false }}
+                    pull: ${{ github.event.client_payload.no_cache || false }}
                     provenance: true
                     sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.GO_NAME }}:${{ matrix.arch }}
                     build-args: |
                         GO_VERSION=${{ steps.godownload.outputs.GO_VERSION }}
+                        CACHE_BUSTER=${{ github.run_id }}
             -   name: build similar
                 run: |
                     for build_name in ${{ env.SIMILAR }}; do
@@ -69,13 +71,23 @@ jobs:
                             SBOM_FLAG="--sbom=true"
                         fi
                     
+                        NO_CACHE_FLAG=""
+                        PULL_FLAG=""
+                        if [ "$NO_CACHE" = "true" ]; then
+                            NO_CACHE_FLAG="--no-cache"
+                            PULL_FLAG="--pull"
+                        fi
+                    
                         docker buildx build \
                             --file ${build_name}.dockerfile \
                             --push \
                             --no-cache \
                             --provenance=true \
+                            ${NO_CACHE_FLAG} \
+                            ${PULL_FLAG} \
                             ${SBOM_FLAG} \
                             --tag ${{ env.OWNER }}/${build_name}:${{ matrix.arch }} \
+                            --build-arg CACHE_BUSTER=${{ github.run_id }} \
                             .
                     done
             -   name: cleanup
@@ -112,3 +124,4 @@ jobs:
                     event-type: ${{ env.EVENT }}
                     token: ${{ secrets.GH_TOKEN }}
                     repository: 960018/docker-images
+                    client-payload: '{"no_cache": "${{ github.event.client_payload.no_cache || false }}"}'

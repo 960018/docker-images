@@ -1,5 +1,7 @@
 FROM    node:current-bookworm-slim AS builder
 
+ARG     CACHE_BUSTER=default
+
 ENV     container=docker
 ENV     DEBIAN_FRONTEND=noninteractive
 ENV     NODE_COMPILE_CACHE=/home/vairogs/.node_cache

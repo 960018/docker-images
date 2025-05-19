@@ -1,5 +1,7 @@
 FROM    nginx:mainline-bookworm AS builder
 
+ARG     CACHE_BUSTER=default
+
 ENV     container=docker
 ENV     DEBIAN_FRONTEND=noninteractive
 
