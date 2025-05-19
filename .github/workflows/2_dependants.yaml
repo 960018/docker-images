@@ -6,11 +6,11 @@ on:
         types: [ independent ]
 
 env:
-    BUILDS: "bun nginx node cron"
-    SIMILAR: "bun nginx cron"
+    BUILDS: "bun nginx node cron go"
+    SIMILAR: "bun nginx cron node"
     EVENT: dependants
     LATEST_TAG: latest
-    NODE_NAME: node
+    GO_NAME: go
     OWNER: ghcr.io/960018
 
 jobs:
@@ -38,16 +38,29 @@ jobs:
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
+            -   name: download go
+                id: godownload
+                run: |
+                    set -eux
+                    GO_VERSION=$(curl -sSL https://go.dev/VERSION?m=text | head -n1 | sed 's/^go//' | xargs)
+                    echo "GO_VERSION=$GO_VERSION" >> >> $GITHUB_OUTPUT
+                    ARCH=${{ matrix.arch }}
+                    URL="https://dl.google.com/go/go${GO_VERSION}.linux-${ARCH}.tar.gz"
+                    
+                    mkdir -p go-root
+                    curl -sSL "$URL" | tar -xz -C go-root
             -   name: build node
                 uses: docker/build-push-action@v6
                 with:
                     context: .
-                    file: ${{ env.NODE_NAME }}.dockerfile
+                    file: ${{ env.GO_NAME }}.dockerfile
                     push: true
                     no-cache: true
                     provenance: true
                     sbom: ${{ matrix.arch == 'amd64' }}
-                    tags: ${{ env.OWNER }}/${{ env.NODE_NAME }}:${{ matrix.arch }}
+                    tags: ${{ env.OWNER }}/${{ env.GO_NAME }}:${{ matrix.arch }}
+                    build-args: |
+                        GO_VERSION=${{ steps.godownload.outputs.GO_VERSION }}
             -   name: build similar
                 run: |
                     for build_name in ${{ env.SIMILAR }}; do
