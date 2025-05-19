@@ -22,6 +22,11 @@ RUN     \
 &&      useradd --system --uid 1000 -g vairogs --shell /bin/bash --home /home/vairogs vairogs \
 &&      passwd -d vairogs \
 &&      usermod -a -G dialout vairogs \
+&&      groupadd docker \
+&&      usermod -a -G docker vairogs \
+&&      mkdir --parents /home/vairogs/.docker \
+&&      chown vairogs:vairogs /home/vairogs/.docker -R \
+&&      chmod g+rwx "/home/vairogs/.docker" -R \
 &&      mkdir --parents /home/vairogs \
 &&      echo 'alias ll="ls -lahs"' >> /home/vairogs/.bashrc \
 &&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
