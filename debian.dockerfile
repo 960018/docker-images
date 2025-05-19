@@ -41,7 +41,7 @@ RUN     \
 &&      apt-get update \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends \
-        apt-utils bash ca-certificates cron git login iputils-ping jq pkg-config procps telnet tzdata unzip util-linux vim-tiny wget \
+        apt-utils bash ca-certificates cron git iputils-ping jq login pkg-config procps telnet tzdata unzip util-linux vim-tiny wget \
 &&      chown vairogs:vairogs /usr/local/bin/wait-for-it \
 &&      chmod +x /usr/local/bin/wait-for-it \
 &&      ln -sf /usr/bin/vi /usr/bin/vim \

@@ -9,7 +9,6 @@ if [ "$(id -u)" = "0" ]; then
         usermod -aG "$SOCK_GID" vairogs || true
     fi
 
-    echo "[entrypoint] Switching to vairogs with interactive TTY support"
     exec su - vairogs -c "exec script -q -c '$0 $*' /dev/null"
 fi
 

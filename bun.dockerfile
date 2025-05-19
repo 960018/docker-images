@@ -24,7 +24,7 @@ RUN     \
 &&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
 &&      apt-get update \
 &&      apt-get upgrade -y \
-&&      apt-get install -y --no-install-recommends procps unzip iputils-ping gosu \
+&&      apt-get install -y --no-install-recommends procps unzip iputils-ping \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 &&      apt-get autoremove -y --purge \
 &&      rm -rf \
@@ -67,3 +67,5 @@ ENV     BUN_INSTALL_BIN=${BUN_INSTALL_BIN}
 COPY    --from=builder / /
 
 WORKDIR /home/vairogs
+
+USER    vairogs
