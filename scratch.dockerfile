@@ -13,3 +13,7 @@ USER    vairogs
 SHELL   ["/bin/bash", "-o", "pipefail", "-c"]
 
 ENTRYPOINT ["/home/vairogs/env_entrypoint.sh"]
+
+WORKDIR /home/vairogs
+
+CMD     ["/bin/bash"]

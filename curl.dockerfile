@@ -1,42 +1,9 @@
-FROM    debian:sid-slim AS builder
+FROM    ghcr.io/960018/debian:latest AS builder
 
 ENV     container=docker
 ENV     DEBIAN_FRONTEND=noninteractive
 
-SHELL   ["/bin/bash", "-o", "pipefail", "-c"]
-
-COPY    global/01_nodoc   /etc/dpkg/dpkg.cfg.d/01_nodoc
-COPY    global/02_nocache /etc/apt/apt.conf.d/02_nocache
-COPY    global/compress   /etc/initramfs-tools/conf.d/compress
-COPY    global/modules    /etc/initramfs-tools/conf.d/modules
-COPY    global/90parallel /etc/apt/apt.conf.d/90parallel
-
-COPY    --chmod=0755 global/wait-for-it.sh /usr/local/bin/wait-for-it
-
 USER    root
-
-RUN     \
-        set -eux \
-&&      groupadd --system --gid 1000 vairogs \
-&&      useradd --system --uid 1000 -g vairogs --shell /bin/bash --home /home/vairogs vairogs \
-&&      passwd -d vairogs \
-&&      usermod -a -G dialout vairogs
-
-WORKDIR /home/vairogs
-
-RUN     \
-        set -eux \
-&&      apt-get update \
-&&      apt-get upgrade -y \
-&&      apt-get install -y --no-install-recommends vim-tiny tzdata bash ca-certificates procps iputils-ping telnet unzip apt-utils pkg-config \
-&&      echo 'alias ll="ls -lahs"' >> /home/vairogs/.bashrc \
-&&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
-&&      chown vairogs:vairogs /usr/local/bin/wait-for-it \
-&&      chmod +x /usr/local/bin/wait-for-it \
-&&      ln -sf /usr/bin/vi /usr/bin/vim \
-&&      chown -R vairogs:vairogs /home/vairogs
-
-WORKDIR /home/vairogs
 
 COPY    curl/source/ /home/vairogs/curl
 COPY    curl/wolfssl/ /home/vairogs/wolfssl
@@ -47,7 +14,8 @@ RUN     \
         set -eux \
 &&      apt-get update \
 &&      apt-get upgrade -y \
-&&      apt-get install -y --no-install-recommends make automake autoconf libtool ca-certificates gcc g++ libbrotli1 libbrotli-dev zstd libzstd-dev librtmp-dev librtmp1 rtmpdump pkg-config \
+&&      apt-get purge -y curl* \
+&&      apt-get install -y --no-install-recommends make automake autoconf libtool gcc g++ libbrotli1 libbrotli-dev zstd libzstd-dev librtmp-dev librtmp1 rtmpdump \
         libgsasl-dev libgsasl18 libpsl-dev perl libnghttp2-dev nghttp2 libssl-dev libssl3t64 libpsl5t64 libssh2-1-dev libssh2-1t64 libldap-dev libldap2-dev libldap-common libldap-2.5-0 libldap2 \
 &&      cd nghttp3 \
 &&      autoreconf -fi \
@@ -136,7 +104,3 @@ COPY    --chmod=0755 curl/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
 FROM    ghcr.io/960018/scratch:latest
 
 COPY    --from=builder / /
-
-WORKDIR /home/vairogs
-
-CMD     ["/bin/bash"]

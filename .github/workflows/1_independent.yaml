@@ -13,6 +13,7 @@ env:
     LATEST_TAG: latest
     OWNER: ghcr.io/960018
     SCRATCH_NAME: scratch
+    DEBIAN_NAME: debian
     POSTGRES_NAME: postgres
     POSTGRES_VERSIONS: "13 14 15 16 17"
 
@@ -69,6 +70,16 @@ jobs:
                             --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-${{ matrix.arch }} \
                             .
                     done
+            -   name: build debian
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.DEBIAN_NAME }}.dockerfile
+                    push: true
+                    no-cache: true
+                    provenance: true
+                    sbom: ${{ matrix.arch == 'amd64' }}
+                    tags: ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:${{ matrix.arch }}
             -   name: cleanup
                 run: |
                     ls -la ./
@@ -97,6 +108,7 @@ jobs:
                     for version in ${{ env.POSTGRES_VERSIONS }}; do
                         docker buildx imagetools create ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-amd64 ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-arm64 --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}
                     done
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:amd64 ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 if: ${{ github.event.client_payload.skip_dispatch != true }}
                 uses: peter-evans/repository-dispatch@v3
