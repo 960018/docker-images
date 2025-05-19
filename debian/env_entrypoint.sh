@@ -2,18 +2,11 @@
 
 set -e
 
-if [ "$(id -u)" = "0" ]; then
-    if [ -t 0 ] && [ -t 1 ]; then
-        exec "$@"
-    fi
-
-    if [ -S /var/run/docker.sock ]; then
-        SOCK_GID=$(stat -c '%g' /var/run/docker.sock)
-        groupadd -o -g "$SOCK_GID" tempdocker 2>/dev/null || true
-        usermod -aG "$SOCK_GID" vairogs || true
-    fi
-
-    exec su - vairogs -c "exec script -q -c '$0 $*' /dev/null"
+if [ -S /var/run/docker.sock ]; then
+    SOCK_GID=$(stat -c '%g' /var/run/docker.sock)
+    sudo groupadd -o -g "$SOCK_GID" tempdocker 2>/dev/null || true
+    sudo usermod -aG "$SOCK_GID" vairogs || true
+    newgrp
 fi
 
 exec "$@"

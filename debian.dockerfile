@@ -18,30 +18,30 @@ COPY    --from=docker:28-dind-rootless --chmod=0755 /usr/local/bin/docker /usr/l
 
 USER    root
 
-RUN     \
-        set -eux \
-&&      groupadd --system --gid 1000 vairogs \
-&&      useradd --system --uid 1000 -g vairogs --shell /bin/bash --home /home/vairogs vairogs \
-&&      passwd -d vairogs \
-&&      usermod -a -G dialout vairogs \
-&&      groupadd docker \
-&&      usermod -a -G docker vairogs \
-&&      mkdir --parents /home/vairogs/.docker \
-&&      chown vairogs:vairogs /home/vairogs/.docker -R \
-&&      chmod g+rwx "/home/vairogs/.docker" -R \
-&&      mkdir --parents /home/vairogs \
-&&      echo 'alias ll="ls -lahs"' >> /home/vairogs/.bashrc \
-&&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
-&&      chown -R vairogs:vairogs /home/vairogs
-
 WORKDIR /home/vairogs
 
 RUN     \
         set -eux \
 &&      apt-get update \
 &&      apt-get upgrade -y \
+&&      apt-get install -y --no-install-recommends sudo \
+&&      groupadd --system --gid 1000 vairogs \
+&&      useradd --system --uid 1000 -g vairogs --shell /bin/bash --home /home/vairogs vairogs \
+&&      passwd -d vairogs \
+&&      usermod -a -G dialout vairogs \
+&&      groupadd docker \
+&&      usermod -a -G docker vairogs \
+&&      echo 'vairogs ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/vairogs \
+&&      chmod 0440 /etc/sudoers.d/vairogs \
+&&      mkdir --parents /home/vairogs/.docker \
+&&      chown vairogs:vairogs /home/vairogs/.docker -R \
+&&      chmod g+rwx "/home/vairogs/.docker" -R \
+&&      mkdir --parents /home/vairogs \
+&&      echo 'alias ll="ls -lahs"' >> /home/vairogs/.bashrc \
+&&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
+&&      chown -R vairogs:vairogs /home/vairogs \
 &&      apt-get install -y --no-install-recommends \
-        apt-utils bash ca-certificates cron git iputils-ping jq login pkg-config procps telnet tzdata unzip util-linux vim-tiny wget \
+        apt-utils bash ca-certificates cron git iputils-ping jq pkg-config procps telnet tzdata unzip util-linux vim-tiny wget \
 &&      chown vairogs:vairogs /usr/local/bin/wait-for-it \
 &&      chmod +x /usr/local/bin/wait-for-it \
 &&      ln -sf /usr/bin/vi /usr/bin/vim \

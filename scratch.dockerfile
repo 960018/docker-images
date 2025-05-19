@@ -14,4 +14,4 @@ ENTRYPOINT ["/home/vairogs/env_entrypoint.sh"]
 
 CMD     ["/bin/bash"]
 
-USER    root
+USER    vairogs
