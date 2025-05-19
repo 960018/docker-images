@@ -53,20 +53,29 @@ jobs:
                     sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ matrix.arch }}
             -   name: build postgres
+                env:
+                    NO_CACHE: ${{ github.event.client_payload.no_cache || 'false' }}
                 run: |
                     for version in ${{ env.POSTGRES_VERSIONS }}; do
                         SBOM_FLAG=""
                         if [ "${{ matrix.arch }}" = "amd64" ]; then
                             SBOM_FLAG="--sbom=true"
                         fi
+                    
+                        NO_CACHE_FLAG=""
+                        if [ "$NO_CACHE" = "true" ]; then
+                            NO_CACHE_FLAG="--no-cache"
+                        fi
 
                         docker buildx build \
                             --file ${{ env.POSTGRES_NAME }}.dockerfile \
                             --push \
-                            --no-cache \
+                            --pull \
                             --provenance=true \
+                            ${NO_CACHE_FLAG} \
                             ${SBOM_FLAG} \
                             --build-arg VERSION=${version} \
+                            --build-arg CACHE_BUSTER=${{ github.run_id }} \
                             --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-${{ matrix.arch }} \
                             .
                     done
@@ -76,10 +85,13 @@ jobs:
                     context: .
                     file: ${{ env.DEBIAN_NAME }}.dockerfile
                     push: true
-                    no-cache: true
+                    pull: true
                     provenance: true
                     sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:${{ matrix.arch }}
+                    no-cache: ${{ github.event.client_payload.no_cache || false }}
+                    build-args: |
+                        CACHE_BUSTER=${{ github.run_id }}
             -   name: cleanup
                 run: |
                     ls -la ./
