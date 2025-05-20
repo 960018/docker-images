@@ -100,7 +100,6 @@ jobs:
                         docker buildx build \
                             --file ${{ env.POSTGRES_NAME }}.dockerfile \
                             --push \
-                            --pull \
                             --provenance=true \
                             ${NO_CACHE_FLAG} \
                             ${PULL_FLAG} \
