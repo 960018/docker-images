@@ -63,7 +63,6 @@ jobs:
                     file: ${{ env.GO_NAME }}.dockerfile
                     push: true
                     no-cache: ${{ github.event.client_payload.no_cache || false }}
-                    pull: ${{ github.event.client_payload.no_cache || false }}
                     provenance: true
                     sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.GO_NAME }}:${{ matrix.arch }}
@@ -79,10 +78,8 @@ jobs:
                         fi
                     
                         NO_CACHE_FLAG=""
-                        PULL_FLAG=""
                         if [ "$NO_CACHE" = "true" ]; then
                             NO_CACHE_FLAG="--no-cache"
-                            PULL_FLAG="--pull"
                         fi
                     
                         docker buildx build \
@@ -91,7 +88,6 @@ jobs:
                             --no-cache \
                             --provenance=true \
                             ${NO_CACHE_FLAG} \
-                            ${PULL_FLAG} \
                             ${SBOM_FLAG} \
                             --tag ${{ env.OWNER }}/${build_name}:${{ matrix.arch }} \
                             --build-arg CACHE_BUSTER=${{ github.run_id }} \
