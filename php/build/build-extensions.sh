@@ -7,6 +7,9 @@ if [[ ! -f /tmp/extensions.json ]]; then
    exit 1
 fi
 
+jobs="$(( $(nproc) / 2 ))"
+[ "$jobs" -lt 1 ] && jobs=1
+
 while IFS= read -r extension; do
     enable=$(jq -r '.["'"${extension}"'"].enable // "false"' extensions.json)
     source_dir=$(jq -r '.["'"${extension}"'"].source' extensions.json)
@@ -36,7 +39,7 @@ while IFS= read -r extension; do
                 ./configure
             fi
         fi
-        make
+        make -j"${jobs}"
         make install
 
         docker-php-ext-enable ${extension}

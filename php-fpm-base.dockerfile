@@ -32,7 +32,9 @@ WORKDIR /home/vairogs
 
 RUN     \
         set -eux \
-&&      apt-get update \
+;       jobs="$(( (nproc) / 2 ))" \
+;       [ "$jobs" -lt 1 ] && jobs=1 \
+;       apt-get update \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends --allow-downgrades make libc-dev libc6-dev gcc g++ cpp git dpkg-dev autoconf jq wget \
 &&      apt-get install -y --no-install-recommends --allow-downgrades bison re2c valgrind libxml2 libssl3t64 libsqlite3-0 libbz2-1.0 libidn2-0 gdb-minimal \
@@ -97,10 +99,9 @@ RUN     \
             --with-valgrind \
             --with-xsl \
             --without-readline \
-&&      make \
+&&      make -j"$jobs" \
 &&      find -type f -name '*.a' -delete \
 &&      make install \
-&&      find /usr/local -type f -perm '/0111' -exec sh -euxc ' strip --strip-all "$@" || : ' -- '{}' + \
 &&      make clean \
 &&      mkdir --parents "$PHP_INI_DIR" \
 &&      cp -v php.ini-* "$PHP_INI_DIR/" \
@@ -179,6 +180,8 @@ COPY    --chmod=0755 php/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
 FROM    ghcr.io/960018/scratch:latest
 
 COPY    --from=builder / /
+
+RUN find /usr/local -type f -perm '/0111' -exec sh -euxc ' strip --strip-all "$@" || : ' -- '{}' + || true
 
 STOPSIGNAL SIGQUIT
 

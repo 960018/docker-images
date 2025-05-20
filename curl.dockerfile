@@ -16,7 +16,9 @@ COPY    curl/nghttp3/ /home/vairogs/nghttp3
 
 RUN     \
         set -eux \
-&&      apt-get update \
+;       jobs="$(( (nproc) / 2 ))" \
+;       [ "$jobs" -lt 1 ] && jobs=1 \
+;       apt-get update \
 &&      apt-get upgrade -y \
 &&      apt-get purge -y curl* \
 &&      apt-get install -y --no-install-recommends make automake autoconf libtool gcc g++ libbrotli1 libbrotli-dev zstd libzstd-dev librtmp-dev librtmp1 rtmpdump \
@@ -24,7 +26,7 @@ RUN     \
 &&      cd nghttp3 \
 &&      autoreconf -fi \
 &&      ./configure --prefix=/usr/local --enable-lib-only \
-&&      make \
+&&      make -j"$jobs" \
 &&      make install \
 &&      cd ../wolfssl \
 &&      autoreconf -fi \
@@ -56,19 +58,19 @@ RUN     \
           --enable-session-ticket \
           --enable-sha512 \
           --enable-tlsx \
-&&      make \
+&&      make -j"$jobs" \
 &&      make install \
 &&      cd ../ngtcp2 \
 &&      autoreconf -fi \
 &&      CFLAGS="-DWOLFSSL_NO_STRICT -DWOLFSSL_NO_ASN_STRICT" ./configure LDFLAGS="-Wl,-rpath,/usr/local/lib" --prefix=/usr/local --with-wolfssl --with-crypto-backend=wolfssl --enable-lib-only \
-&&      make \
+&&      make -j"$jobs" \
 &&      make install \
 &&      cd ../curl \
 &&      autoreconf -fi \
 &&      ./configure CFLAGS='-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native -DWOLFSSL_NO_STRICT -DWOLFSSL_NO_ASN_STRICT' --prefix=/usr/local \
             --with-wolfssl --with-zlib --with-brotli --enable-ipv6 --with-libidn2 --enable-sspi --with-librtmp --with-ngtcp2 --with-nghttp3 --with-nghttp2 --enable-websockets --with-zstd --disable-manual --disable-docs \
             --with-libssh2 --enable-ldap --enable-ldaps \
-&&      make \
+&&      make -j"$jobs" \
 &&      make install \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false libbrotli-dev git cmake make automake autoconf libtool gcc g++ libzstd-dev libssl-dev librtmp-dev krb5-multidev libcrypt-dev libnsl-dev libtirpc-dev linux-libc-dev comerr-dev perl libnghttp3-dev \
             libnghttp2-dev libgsasl-dev libgssglue-dev libidn-dev libidn11-dev libntlm0-dev libpsl-dev curl libcurl4 libgss-dev libssh2-1-dev libldap-dev libldap2-dev \
