@@ -32,7 +32,7 @@ WORKDIR /home/vairogs
 
 RUN     \
         set -eux \
-;       jobs="$(( (nproc) - 1 ))" \
+;       jobs="$(( $(nproc) - 1 ))" \
 ;       [ "$jobs" -lt 1 ] && jobs=1 \
 ;       apt-get update \
 &&      apt-get upgrade -y \
