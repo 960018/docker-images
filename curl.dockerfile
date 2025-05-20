@@ -16,7 +16,7 @@ COPY    curl/nghttp3/ /home/vairogs/nghttp3
 
 RUN     \
         set -eux \
-;       jobs="$(( (nproc) / 2 ))" \
+;       jobs="$(( (nproc) - 1 ))" \
 ;       [ "$jobs" -lt 1 ] && jobs=1 \
 ;       apt-get update \
 &&      apt-get upgrade -y \

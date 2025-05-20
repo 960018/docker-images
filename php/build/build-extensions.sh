@@ -7,7 +7,7 @@ if [[ ! -f /tmp/extensions.json ]]; then
    exit 1
 fi
 
-jobs="$(( $(nproc) / 2 ))"
+jobs="$(( $(nproc) - 1 ))"
 [ "$jobs" -lt 1 ] && jobs=1
 
 while IFS= read -r extension; do
