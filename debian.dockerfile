@@ -14,7 +14,9 @@ COPY    global/modules    /etc/initramfs-tools/conf.d/modules
 COPY    global/90parallel /etc/apt/apt.conf.d/90parallel
 
 COPY    --chmod=0755 global/wait-for-it.sh /usr/local/bin/wait-for-it
-COPY    --from=docker:28-dind-rootless --chmod=0755 /usr/local/bin/docker /usr/local/bin/docker
+COPY    --from=docker:28-rootless --chmod=0755 /usr/local/bin/docker /usr/local/bin/docker
+COPY    --from=docker:28-rootless --chmod=0755 /usr/local/libexec/docker/cli-plugins/docker-buildx /usr/local/libexec/docker/cli-plugins/docker-buildx
+COPY    --from=docker:28-rootless --chmod=0755 /usr/local/libexec/docker/cli-plugins/docker-compose /usr/local/libexec/docker/cli-plugins/docker-compose
 
 USER    root
 
