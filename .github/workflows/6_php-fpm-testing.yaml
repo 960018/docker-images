@@ -38,7 +38,7 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: dependencies
                 run: |
-                    docker pull ghcr.io/960018/php/scratch:latest
+                    docker pull ghcr.io/960018/scratch:latest
                     docker pull ghcr.io/960018/php/fpm:latest
             -   name: clone
                 run: |
