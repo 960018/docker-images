@@ -36,6 +36,9 @@ jobs:
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
+            -   name: dependencies
+                run: |
+                    docker pull ghcr.io/960018/debian:latest
             -   name: build action
                 uses: docker/build-push-action@v6
                 with:

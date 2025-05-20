@@ -37,6 +37,10 @@ jobs:
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
+            -   name: dependencies
+                run: |
+                    docker pull ghcr.io/960018/php/fpm:latest
+                    docker pull ghcr.io/960018/php/fpm-testing:latest
             -   name: build php-fpm socket
                 uses: docker/build-push-action@v6
                 with:

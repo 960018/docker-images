@@ -38,6 +38,13 @@ jobs:
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
+            -   name: dependencies
+                run: |
+                    docker pull ghcr.io/960018/scratch:latest
+                    docker pull ghcr.io/960018/debian:latest
+                    docker pull oven/bun:canary-debian
+                    docker pull nginx:mainline-bookworm
+                    docker pull node:current-bookworm-slim
             -   name: download go
                 id: godownload
                 run: |
