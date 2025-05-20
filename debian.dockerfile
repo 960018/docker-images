@@ -56,7 +56,7 @@ RUN     echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/con
 
 USER    vairogs
 
-RUN    \
+RUN     \
         set -eux \
 &&      mkdir --parents /home/vairogs/environment \
 &&      env | sed 's/^\([^=]*\)=\(.*\)$/\1=\2/' >> /home/vairogs/environment/environment.txt

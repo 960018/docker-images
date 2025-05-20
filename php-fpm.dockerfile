@@ -27,7 +27,7 @@ STOPSIGNAL SIGQUIT
 
 WORKDIR /tmp
 
-RUN    \
+RUN     \
         set -eux \
 &&      composer self-update --snapshot \
 &&      mkdir --parents /tmp/extensions \
@@ -93,7 +93,7 @@ WORKDIR /var/www/html
 
 USER    vairogs
 
-RUN    \
+RUN     \
         set -eux \
 &&      mkdir --parents /home/vairogs/environment \
 &&      env | sed 's/^\([^=]*\)=\(.*\)$/\1=\2/' >> /home/vairogs/environment/environment.txt
