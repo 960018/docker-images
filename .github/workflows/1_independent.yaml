@@ -51,7 +51,7 @@ jobs:
             -   name: dependencies
                 run: |
                     docker pull debian:sid-slim
-                    docker pull docker:28-cli
+                    docker pull docker:28-dind-rootless
                     
                     for version in ${{ env.POSTGRES_VERSIONS }}; do
                         docker pull postgres:${version}-bookworm

@@ -67,6 +67,14 @@ RUN     \
 
 COPY    --chmod=0755 debian/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
 
+RUN     \
+        set -eux; \
+        if [ ! -S /var/run/docker.sock ]; then \
+            mkdir -p /var/run && \
+            touch /var/run/docker.sock && \
+            chmod 000 /var/run/docker.sock; \
+        fi
+
 FROM    ghcr.io/960018/scratch:latest
 
 COPY    --from=builder / /
