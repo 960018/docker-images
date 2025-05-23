@@ -56,6 +56,14 @@ RUN     \
             /usr/local/share/man \
             /var/lib/apt/lists/*
 
+RUN     \
+        set -eux; \
+        if [ ! -S /var/run/docker.sock ]; then \
+            mkdir -p /var/run && \
+            touch /var/run/docker.sock && \
+            chmod 000 /var/run/docker.sock; \
+        fi
+
 RUN     echo 'if [ -f /home/vairogs/container_env.sh ]; then . /home/vairogs/container_env.sh; fi' >> /etc/bash.bashrc
 
 USER    vairogs
@@ -66,14 +74,6 @@ RUN     \
 &&      env | sed 's/^\([^=]*\)=\(.*\)$/\1=\2/' >> /home/vairogs/environment/environment.txt
 
 COPY    --chmod=0755 debian/env_entrypoint.sh /home/vairogs/env_entrypoint.sh
-
-RUN     \
-        set -eux; \
-        if [ ! -S /var/run/docker.sock ]; then \
-            mkdir -p /var/run && \
-            touch /var/run/docker.sock && \
-            chmod 000 /var/run/docker.sock; \
-        fi
 
 FROM    ghcr.io/960018/scratch:latest
 
