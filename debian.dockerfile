@@ -14,9 +14,11 @@ COPY    global/modules    /etc/initramfs-tools/conf.d/modules
 COPY    global/90parallel /etc/apt/apt.conf.d/90parallel
 
 COPY    --chmod=0755 global/wait-for-it.sh /usr/local/bin/wait-for-it
-COPY    --from=docker:28-cli --chmod=0755 /usr/local/bin/docker /usr/local/bin/docker
-COPY    --from=docker:28-cli --chmod=0755 /usr/local/libexec/docker/cli-plugins/docker-buildx /usr/local/libexec/docker/cli-plugins/docker-buildx
-COPY    --from=docker:28-cli --chmod=0755 /usr/local/libexec/docker/cli-plugins/docker-compose /usr/local/libexec/docker/cli-plugins/docker-compose
+COPY    --from=docker:28-dind-cli --chmod=0755 /usr/local/bin/docker /usr/local/bin/docker
+COPY    --from=docker:28-dind-cli --chmod=0755 /usr/local/libexec/docker/cli-plugins/docker-buildx /usr/local/libexec/docker/cli-plugins/docker-buildx
+COPY    --from=docker:28-dind-cli --chmod=0755 /usr/local/libexec/docker/cli-plugins/docker-compose /usr/local/libexec/docker/cli-plugins/docker-compose
+
+VOLUME  ["/var/run/docker.sock"]
 
 USER    root
 
@@ -43,7 +45,7 @@ RUN     \
 &&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
 &&      chown -R vairogs:vairogs /home/vairogs \
 &&      apt-get install -y --no-install-recommends \
-        apt-utils bash ca-certificates cron git iputils-ping jq pkg-config procps telnet tzdata unzip util-linux vim-tiny wget \
+        bash ca-certificates cron git iputils-ping jq pkg-config procps telnet tzdata unzip util-linux vim-tiny wget \
 &&      chown vairogs:vairogs /usr/local/bin/wait-for-it \
 &&      chmod +x /usr/local/bin/wait-for-it \
 &&      ln -sf /usr/bin/vi /usr/bin/vim \
