@@ -54,7 +54,8 @@ RUN     \
             /usr/share/man \
             /usr/share/doc \
             /usr/local/share/man \
-            /var/lib/apt/lists/*
+            /var/lib/apt/lists/* \
+            /*.deb
 
 RUN     \
         set -eux; \
