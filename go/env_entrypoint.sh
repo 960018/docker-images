@@ -11,7 +11,7 @@ if [ -z "$REEXEC_DONE" ]; then
     else
         sudo groupadd -o -g "$SOCK_GID" tempdocker 2>/dev/null || true
         sudo usermod -aG "$SOCK_GID" "$(whoami)" || true
-        exec sudo -u "$(whoami)" env REEXEC_DONE=1 "$0" "$@"
+        exec sudo -E -u "$(whoami)" env REEXEC_DONE=1 "$0" "$@"
     fi
 fi
 
