@@ -45,7 +45,7 @@ RUN     \
 &&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
 &&      chown -R vairogs:vairogs /home/vairogs \
 &&      apt-get install -y --no-install-recommends \
-        bash ca-certificates cron git iputils-ping jq pkg-config procps telnet tzdata unzip util-linux vim-tiny wget \
+        bash ca-certificates cron git iputils-ping jq openssh-client pkg-config procps telnet tzdata unzip util-linux vim-tiny wget \
 &&      chown vairogs:vairogs /usr/local/bin/wait-for-it \
 &&      chmod +x /usr/local/bin/wait-for-it \
 &&      ln -sf /usr/bin/vi /usr/bin/vim \
