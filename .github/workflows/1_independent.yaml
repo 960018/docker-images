@@ -53,9 +53,11 @@ jobs:
                     docker pull debian:sid-slim
                     docker pull docker:28-dind-rootless
                     
-                    for version in ${{ env.POSTGRES_VERSIONS }}; do
-                        docker pull postgres:${version}-bookworm
-                    done
+                    if [ "${{ github.event.client_payload.skip_postgres }}" != "true" ]; then
+                        for version in ${{ env.POSTGRES_VERSIONS }}; do
+                            docker pull postgres:${version}-bookworm
+                        done
+                    fi
             -   name: build scratch
                 uses: docker/build-push-action@v6
                 with:
@@ -130,9 +132,11 @@ jobs:
             -   name: multiarch
                 run: |
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:amd64 ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ env.LATEST_TAG }}
-                    for version in ${{ env.POSTGRES_VERSIONS }}; do
-                        docker buildx imagetools create ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-amd64 ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-arm64 --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}
-                    done
+                    if [ "${{ github.event.client_payload.skip_postgres }}" != "true" ]; then
+                        for version in ${{ env.POSTGRES_VERSIONS }}; do
+                            docker buildx imagetools create ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-amd64 ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-arm64 --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}
+                        done
+                    fi
                     docker buildx imagetools create ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:amd64 ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 if: ${{ github.event.client_payload.skip_dispatch != true }}
