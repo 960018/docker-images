@@ -24,7 +24,6 @@ RUN    \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends --allow-downgrades make libc-dev libc6-dev gcc g++ cpp git dpkg-dev autoconf fontconfig
 
-COPY    php/aspect/ /tmp/extensions/aspect/
 COPY    php/pcov/ /tmp/extensions/pcov/
 COPY    php/xdebug/ /tmp/extensions/xdebug/
 

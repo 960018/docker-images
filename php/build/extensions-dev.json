@@ -11,11 +11,6 @@
             "echo xdebug.log=/tmp/xdebug.log >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini"
         ]
     },
-    "aspect": {
-        "source": "/tmp/extensions/aspect/",
-        "enable": true,
-        "configure": "--enable-aspect"
-    },
     "pcov": {
         "source": "/tmp/extensions/pcov/",
         "enable": true,
