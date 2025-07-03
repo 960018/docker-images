@@ -75,13 +75,6 @@
         "req": "libhiredis1.1.0 libhiredis-dev libzstd-dev liblzf-dev liblz4-dev",
         "remove": "libhiredis-dev libzstd-dev liblzf-dev liblz4-dev"
     },
-    "phpiredis": {
-        "source": "/tmp/extensions/phpiredis/",
-        "enable": true,
-        "configure": "--enable-phpiredis",
-        "req": "libhiredis1.1.0 libhiredis-dev",
-        "remove": "libhiredis-dev"
-    },
     "excimer": {
         "source": "/tmp/extensions/mediawiki-php-excimer/",
         "enable": true

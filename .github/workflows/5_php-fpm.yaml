@@ -78,7 +78,6 @@ jobs:
                     clone_repo https://github.com/fork-php/php-inotify.git php-inotify
                     clone_repo https://github.com/fork-php/php-spx.git php-spx
                     clone_repo https://github.com/fork-php/php_zip.git php_zip
-                    clone_repo https://github.com/fork-php/phpiredis.git phpiredis
                     clone_repo https://github.com/fork-php/phpredis.git phpredis
                     clone_repo https://github.com/fork-php/simdjson_php.git simdjson_php
             -   name: build php-fpm
