@@ -22,14 +22,12 @@ if [ ! -s "$tmp_crontab" ]; then # -s checks if the file is not empty
     exit 0 # Consider this a success if no crons were provided intentionally
 fi
 
-# Install the combined crontab
-if ! crontab "$tmp_crontab"; then
-    echo "Error installing crontab." >&2
+# Install the crontab
+if ! crontab -u vairogs "$tmp_crontab"; then
+    echo "Error installing crontab for vairogs." >&2
     exit 1
 fi
 
-crontab -u vairogs "$tmp_crontab"
-
 rm "$tmp_crontab"
 
-echo "Crontab updated."
+echo "Crontab updated for 'vairogs'"
