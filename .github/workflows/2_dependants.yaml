@@ -139,7 +139,7 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${build_name}:unstable-amd64 ${{ env.OWNER }}/${build_name}:unstable-arm64 --tag ${{ env.OWNER }}/${build_name}:unstable
+                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.GO_NAME }}:unstable-amd64 ${{ env.OWNER }}/${{ env.GO_NAME }}:unstable-arm64 --tag ${{ env.OWNER }}/${{ env.GO_NAME }}:unstable
                     
                     for build_name in ${{ env.BUILDS }}; do
                         docker buildx imagetools create ${{ env.OWNER }}/${build_name}:amd64 ${{ env.OWNER }}/${build_name}:arm64 --tag ${{ env.OWNER }}/${build_name}:${{ env.LATEST_TAG }}

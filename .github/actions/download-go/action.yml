@@ -21,7 +21,7 @@ runs:
         if [ "${{ inputs.version }}" = "latest" ]; then
           GO_VERSION=$(curl -sSL https://go.dev/VERSION?m=text | head -n1 | sed 's/^go//' | xargs)
         else
-          GO_VERSION=$(curl -s https://go.dev/dl/ | grep -oE 'go[0-9]+\.[0-9]+(beta|rc)[0-9]+' | sed 's/^go//' | head -n1 | xargs)
+          GO_VERSION=$(curl -s https://go.dev/dl/ | grep -oE 'go[0-9]+\.[0-9]+(beta|rc)[0-9]+' | head -n1 | sed 's/^go//' | xargs)
         fi
         echo "GO_VERSION=$GO_VERSION" >> $GITHUB_OUTPUT
         
