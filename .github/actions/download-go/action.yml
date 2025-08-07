@@ -19,14 +19,17 @@ runs:
       run: |
         set -eux
         if [ "${{ inputs.version }}" = "latest" ]; then
-          GO_VERSION=$(curl -sSL https://go.dev/VERSION?m=text | head -n1 | sed 's/^go//' | xargs)
+          JSON=$(curl -s 'https://go.dev/dl/?mode=json')
+          GO_VERSION=$(echo "$JSON" | grep '"version"' | head -1 | cut -d'"' -f4 | sed 's/^go//')
+          FILENAME=$(echo "$JSON" | grep "\"filename\".*linux-${{ inputs.arch }}.*tar.gz" | head -1 | cut -d'"' -f4)
         else
-          GO_VERSION=$(curl -s https://go.dev/dl/ | grep -m 1 -oE 'go[0-9]+\.[0-9]+(beta|rc)[0-9]+' | sed 's/^go//' | xargs)
+          JSON=$(curl -s 'https://go.dev/dl/?mode=json&include=all')
+          GO_VERSION=$(echo "$JSON" | grep -A10 '"stable": false' | grep '"version"' | head -1 | cut -d'"' -f4 | sed 's/^go//')
+          FILENAME=$(echo "$JSON" | grep "\"filename\".*linux-${{ inputs.arch }}.*tar.gz" | grep -E "(beta|rc)" | head -1 | cut -d'"' -f4)
         fi
         echo "GO_VERSION=$GO_VERSION" >> $GITHUB_OUTPUT
         
-        ARCH=${{ inputs.arch }}
-        URL="https://go.dev/dl/go${GO_VERSION}.linux-${ARCH}.tar.gz"
+        URL="https://go.dev/dl/${FILENAME}"
         
         mkdir -p go-root-${{ inputs.version }}
         curl -sSL "$URL" | tar -xz -C go-root-${{ inputs.version }}
