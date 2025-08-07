@@ -26,7 +26,7 @@ runs:
         echo "GO_VERSION=$GO_VERSION" >> $GITHUB_OUTPUT
         
         ARCH=${{ inputs.arch }}
-        URL="https://dl.google.com/go/go${GO_VERSION}.linux-${ARCH}.tar.gz"
+        URL="https://go.dev/dl/go${GO_VERSION}.linux-${ARCH}.tar.gz"
         
         mkdir -p go-root-${{ inputs.version }}
         curl -sSL "$URL" | tar -xz -C go-root-${{ inputs.version }}
