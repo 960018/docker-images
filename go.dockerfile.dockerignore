@@ -1,4 +1,6 @@
 *
 !go.dockerfile
 !go-root/**
+!go-root-latest/**
+!go-root-unstable/**
 !go/*
