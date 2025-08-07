@@ -8,6 +8,8 @@ ENV     DEBIAN_FRONTEND=noninteractive
 ARG     GO_VERSION
 ENV     GO_VERSION=${GO_VERSION}
 
+ARG     GO_ROOT
+
 USER    root
 
 RUN     \
@@ -26,7 +28,7 @@ ENV     GOTOOLCHAIN=local
 ENV     GOPATH=/go
 ENV     PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
-COPY    go-root/go /usr/local/go
+COPY    ${GO_ROOT}/go /usr/local/go
 
 RUN     \
         set -eux \
