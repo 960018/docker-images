@@ -19,11 +19,15 @@ runs:
       run: |
         set -eux
         if [ "${{ inputs.version }}" = "latest" ]; then
+          set +x
           JSON=$(curl -s 'https://go.dev/dl/?mode=json')
+          set -x
           GO_VERSION=$(echo "$JSON" | grep '"version"' | head -1 | cut -d'"' -f4 | sed 's/^go//')
           FILENAME=$(echo "$JSON" | grep "\"filename\".*linux-${{ inputs.arch }}.*tar.gz" | head -1 | cut -d'"' -f4)
         else
+          set +x
           JSON=$(curl -s 'https://go.dev/dl/?mode=json&include=all')
+          set -x
           GO_VERSION=$(echo "$JSON" | grep -A10 '"stable": false' | grep '"version"' | head -1 | cut -d'"' -f4 | sed 's/^go//')
           FILENAME=$(echo "$JSON" | grep "\"filename\".*linux-${{ inputs.arch }}.*tar.gz" | grep -E "(beta|rc)" | head -1 | cut -d'"' -f4)
         fi
