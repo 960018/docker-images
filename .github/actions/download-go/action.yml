@@ -1,0 +1,32 @@
+name: 'Download Go'
+description: 'Download Go version (latest or unstable)'
+inputs:
+  version:
+    description: 'Go version to download (latest or unstable)'
+    required: true
+  arch:
+    description: 'Architecture (amd64 or arm64)'
+    required: true
+outputs:
+  go_version:
+    description: 'Downloaded Go version'
+    value: ${{ steps.download.outputs.GO_VERSION }}
+runs:
+  using: 'composite'
+  steps:
+    - id: download
+      shell: bash
+      run: |
+        set -eux
+        if [ "${{ inputs.version }}" = "latest" ]; then
+          GO_VERSION=$(curl -sSL https://go.dev/VERSION?m=text | head -n1 | sed 's/^go//' | xargs)
+        else
+          GO_VERSION=$(curl -s https://go.dev/dl/ | grep -oE 'go[0-9]+\.[0-9]+(beta|rc)[0-9]+' | sed 's/^go//' | head -n1 | xargs)
+        fi
+        echo "GO_VERSION=$GO_VERSION" >> $GITHUB_OUTPUT
+        
+        ARCH=${{ inputs.arch }}
+        URL="https://dl.google.com/go/go${GO_VERSION}.linux-${ARCH}.tar.gz"
+        
+        mkdir -p go-root-${{ inputs.version }}
+        curl -sSL "$URL" | tar -xz -C go-root-${{ inputs.version }}

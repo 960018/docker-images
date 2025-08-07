@@ -45,18 +45,19 @@ jobs:
                     docker pull oven/bun:canary-debian
                     docker pull nginx:mainline-bookworm
                     docker pull node:current-bookworm-slim
-            -   name: download go
-                id: godownload
-                run: |
-                    set -eux
-                    GO_VERSION=$(curl -sSL https://go.dev/VERSION?m=text | head -n1 | sed 's/^go//' | xargs)
-                    echo "GO_VERSION=$GO_VERSION" >> $GITHUB_OUTPUT
-                    ARCH=${{ matrix.arch }}
-                    URL="https://dl.google.com/go/go${GO_VERSION}.linux-${ARCH}.tar.gz"
-                    
-                    mkdir -p go-root
-                    curl -sSL "$URL" | tar -xz -C go-root
-            -   name: build go
+            -   name: download go latest
+                id: golatest
+                uses: ./.github/actions/download-go
+                with:
+                    version: latest
+                    arch: ${{ matrix.arch }}
+            -   name: download go unstable
+                id: gounstable
+                uses: ./.github/actions/download-go
+                with:
+                    version: unstable
+                    arch: ${{ matrix.arch }}
+            -   name: build go latest
                 uses: docker/build-push-action@v6
                 with:
                     context: .
@@ -67,8 +68,23 @@ jobs:
                     sbom: ${{ matrix.arch == 'amd64' }}
                     tags: ${{ env.OWNER }}/${{ env.GO_NAME }}:${{ matrix.arch }}
                     build-args: |
-                        GO_VERSION=${{ steps.godownload.outputs.GO_VERSION }}
+                        GO_VERSION=${{ steps.golatest.outputs.go_version }}
                         CACHE_BUSTER=${{ github.run_id }}
+                        GO_ROOT=go-root-latest
+            -   name: build go unstable
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.GO_NAME }}.dockerfile
+                    push: true
+                    no-cache: ${{ github.event.client_payload.no_cache || false }}
+                    provenance: true
+                    sbom: ${{ matrix.arch == 'amd64' }}
+                    tags: ${{ env.OWNER }}/${{ env.GO_NAME }}:unstable-${{ matrix.arch }}
+                    build-args: |
+                        GO_VERSION=${{ steps.gounstable.outputs.go_version }}
+                        CACHE_BUSTER=${{ github.run_id }}
+                        GO_ROOT=go-root-unstable
             -   name: build similar
                 run: |
                     for build_name in ${{ env.SIMILAR }}; do
@@ -123,6 +139,8 @@ jobs:
                     driver-opts: image=moby/buildkit:master-rootless
             -   name: multiarch
                 run: |
+                    docker buildx imagetools create ${{ env.OWNER }}/${build_name}:unstable-amd64 ${{ env.OWNER }}/${build_name}:unstable-arm64 --tag ${{ env.OWNER }}/${build_name}:unstable
+                    
                     for build_name in ${{ env.BUILDS }}; do
                         docker buildx imagetools create ${{ env.OWNER }}/${build_name}:amd64 ${{ env.OWNER }}/${build_name}:arm64 --tag ${{ env.OWNER }}/${build_name}:${{ env.LATEST_TAG }}
                     done
