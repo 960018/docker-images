@@ -72,7 +72,6 @@ RUN     \
             --enable-huge-code-pages \
             --enable-intl \
             --enable-mbstring \
-            --enable-opcache \
             --enable-option-checking=fatal \
             --enable-sysvsem \
             --enable-sysvshm \
