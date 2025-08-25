@@ -20,15 +20,7 @@ env:
 jobs:
 
     build:
-        strategy:
-            matrix:
-                arch: [ amd64, arm64 ]
-                include:
-                    -   arch: amd64
-                        os: self-amd64
-                    -   arch: arm64
-                        os: self-arm64
-        runs-on: ${{ matrix.os }}
+        runs-on: self-arm64
         steps:
             -   name: login
                 uses: docker/login-action@v3
@@ -66,8 +58,10 @@ jobs:
                     push: true
                     no-cache: true
                     provenance: true
-                    sbom: ${{ matrix.arch == 'amd64' }}
-                    tags: ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ matrix.arch }}
+                    sbom: true
+                    tags: |
+                        ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:arm64
+                        ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ env.LATEST_TAG }}
             -   name: build debian
                 uses: docker/build-push-action@v6
                 with:
@@ -75,8 +69,10 @@ jobs:
                     file: ${{ env.DEBIAN_NAME }}.dockerfile
                     push: true
                     provenance: true
-                    sbom: ${{ matrix.arch == 'amd64' }}
-                    tags: ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:${{ matrix.arch }}
+                    sbom: true
+                    tags: |
+                        ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:arm64
+                        ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:${{ env.LATEST_TAG }}
                     no-cache: ${{ github.event.client_payload.no_cache || false }}
                     build-args: |
                         CACHE_BUSTER=${{ github.run_id }}
@@ -86,11 +82,6 @@ jobs:
                     NO_CACHE: ${{ github.event.client_payload.no_cache || 'false' }}
                 run: |
                     for version in ${{ env.POSTGRES_VERSIONS }}; do
-                        SBOM_FLAG=""
-                        if [ "${{ matrix.arch }}" = "amd64" ]; then
-                            SBOM_FLAG="--sbom=true"
-                        fi
-                    
                         NO_CACHE_FLAG=""
                         if [ "$NO_CACHE" = "true" ]; then
                             NO_CACHE_FLAG="--no-cache"
@@ -101,10 +92,11 @@ jobs:
                             --push \
                             --provenance=true \
                             ${NO_CACHE_FLAG} \
-                            ${SBOM_FLAG} \
                             --build-arg VERSION=${version} \
                             --build-arg CACHE_BUSTER=${{ github.run_id }} \
-                            --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-${{ matrix.arch }} \
+                            --sbom=true \
+                            --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-arm64 \
+                            --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version} \
                             .
                     done
             -   name: cleanup
@@ -115,29 +107,10 @@ jobs:
                     ls -la ./
                     docker builder prune -af
 
-    multiarch:
+    dispatch:
         runs-on: ubuntu-latest
         needs: [ build ]
         steps:
-            -   name: login
-                uses: docker/login-action@v3
-                with:
-                    registry: ghcr.io
-                    username: ${{ github.repository_owner }}
-                    password: ${{ secrets.GH_TOKEN }}
-            -   name: buildkit
-                uses: docker/setup-buildx-action@v3
-                with:
-                    driver-opts: image=moby/buildkit:master-rootless
-            -   name: multiarch
-                run: |
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:amd64 ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.SCRATCH_NAME }}:${{ env.LATEST_TAG }}
-                    if [ "${{ github.event.client_payload.skip_postgres }}" != "true" ]; then
-                        for version in ${{ env.POSTGRES_VERSIONS }}; do
-                            docker buildx imagetools create ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-amd64 ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}-arm64 --tag ${{ env.OWNER }}/${{ env.POSTGRES_NAME }}:${version}
-                        done
-                    fi
-                    docker buildx imagetools create ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:amd64 ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:arm64 --tag ${{ env.OWNER }}/${{ env.DEBIAN_NAME }}:${{ env.LATEST_TAG }}
             -   name: dispatch
                 if: ${{ github.event.client_payload.skip_dispatch != true }}
                 uses: peter-evans/repository-dispatch@v3

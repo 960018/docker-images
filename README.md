@@ -1,6 +1,6 @@
 # Docker Images
 
-A collection of Docker images for various services and applications, built for both amd64 and arm64 architectures and published to GitHub Container Registry.
+A collection of Docker images for various services and applications, built for arm64 architecture and published to GitHub Container Registry.
 
 ## Available Images
 
