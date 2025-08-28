@@ -121,6 +121,8 @@ RUN     \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false libxml2-dev libssl-dev libsqlite3-dev libbz2-dev libidn2-dev \
         libzstd-dev libbrotli-dev libpsl-dev libgsasl-dev librtmp-dev libnghttp2-dev libnghttp3-dev libonig-dev libpq-dev libsodium-dev \
         libargon2-dev libtidy-dev libzip-dev libgmp-dev zlib1g-dev libffi-dev libssh2-1-dev libldap-dev libxslt1-dev libicu-dev \
+&&      echo "/usr/local/lib" > /etc/ld.so.conf.d/local-lib.conf \
+&&      ldconfig \
 &&      mkdir --parents /var/lib/php/sessions \
 &&      chown -R vairogs:vairogs /var/lib/php/sessions \
 &&      mkdir --parents /var/lib/php/opcache \
