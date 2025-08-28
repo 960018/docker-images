@@ -1,4 +1,4 @@
-FROM    node:current-bookworm-slim AS builder
+FROM    node:current-trixie-slim AS builder
 
 ARG     CACHE_BUSTER=default
 

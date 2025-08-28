@@ -1,6 +1,6 @@
 ARG     VERSION
 
-FROM    postgres:${VERSION}-bookworm
+FROM    postgres:${VERSION}-trixie
 
 ARG     CACHE_BUSTER=default
 
