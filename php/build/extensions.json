@@ -10,8 +10,7 @@
     "igbinary": {
         "source": "/tmp/extensions/igbinary/",
         "enable": true,
-        "configure": "--enable-igbinary",
-        "flags": "-O2 -g"
+        "configure": "--enable-igbinary"
     },
     "event": {
         "source": "/tmp/extensions/pecl-event/",

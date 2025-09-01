@@ -1,3 +1,4 @@
+FROM    fholzer/nginx-brotli:mainline-latest AS brotli-nginx
 FROM    nginx:mainline-bookworm AS builder
 
 ARG     CACHE_BUSTER=default
@@ -12,6 +13,8 @@ COPY    global/02_nocache /etc/apt/apt.conf.d/02_nocache
 COPY    global/compress  /etc/initramfs-tools/conf.d/compress
 COPY    global/modules   /etc/initramfs-tools/conf.d/modules
 COPY    global/90parallel   /etc/apt/apt.conf.d/90parallel
+
+COPY    --from=brotli-nginx /usr/lib/nginx/modules/ngx_http_brotli_*.so /etc/nginx/modules/
 
 USER    root
 

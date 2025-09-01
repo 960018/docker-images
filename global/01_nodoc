@@ -1,11 +1,11 @@
-# /etc/dpkg/dpkg.cfg.d/01_nodoc
-
-# Delete locales
+# Delete locales except English
 path-exclude=/usr/share/locale/*
+path-include=/usr/share/locale/en*
 
 # Delete man pages
 path-exclude=/usr/share/man/*
 
-# Delete docs
+# Delete docs except copyright and README
 path-exclude=/usr/share/doc/*
 path-include=/usr/share/doc/*/copyright
+path-include=/usr/share/doc/*/README*
