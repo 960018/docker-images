@@ -15,7 +15,7 @@ env:
     SCRATCH_NAME: scratch
     DEBIAN_NAME: debian
     POSTGRES_NAME: postgres
-    POSTGRES_VERSIONS: "13 14 15 16 17 18beta3"
+    POSTGRES_VERSIONS: "13 14 15 16 17 18rc1"
 
 jobs:
 
@@ -47,7 +47,7 @@ jobs:
                     
                     if [ "${{ github.event.client_payload.skip_postgres }}" != "true" ]; then
                         for version in ${{ env.POSTGRES_VERSIONS }}; do
-                            docker pull postgres:${version}-bookworm
+                            docker pull postgres:${version}-trixie
                         done
                     fi
             -   name: build scratch
