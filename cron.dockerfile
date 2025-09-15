@@ -7,6 +7,9 @@ ENV     DEBIAN_FRONTEND=noninteractive
 
 COPY    --chmod=0755 cron/update_crontab.sh /usr/local/bin/update_crontab
 COPY    --chmod=0755 cron/entrypoint.sh /usr/local/bin/entrypoint
+COPY    --from=docker:28-dind-rootless --chmod=0755 /usr/local/bin/docker /usr/local/bin/docker
+COPY    --from=docker:28-dind-rootless --chmod=0755 /usr/local/libexec/docker/cli-plugins/docker-buildx /usr/local/libexec/docker/cli-plugins/docker-buildx
+COPY    --from=docker:28-dind-rootless --chmod=0755 /usr/local/libexec/docker/cli-plugins/docker-compose /usr/local/libexec/docker/cli-plugins/docker-compose
 
 VOLUME  ["/var/run/docker.sock"]
 
@@ -36,6 +39,14 @@ RUN     \
             /var/cache/* \
             /usr/share/vim/vim90/doc \
             /usr/share/man/*
+
+RUN     \
+        set -eux; \
+        if [ ! -S /var/run/docker.sock ]; then \
+            mkdir -p /var/run && \
+            touch /var/run/docker.sock && \
+            chmod 000 /var/run/docker.sock; \
+        fi
 
 WORKDIR /cron
 
