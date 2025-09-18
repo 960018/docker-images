@@ -12,7 +12,6 @@ ENV     PHP_INI_DIR=/usr/local/etc/php
 ENV     PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O3 -ftree-vectorize -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -march=native -mtune=native"
 ENV     PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV     PHP_LDFLAGS="-Wl,-O3 -pie"
-ENV     PHP_CS_FIXER_IGNORE_ENV=1
 ENV     PHP_COMMIT_HASH=${PHP_COMMIT_HASH}
 ENV     PHP_BUILD_PROVIDER='https://github.com/960018/docker-images'
 ENV     PHP_UNAME="Linux (${ARCH}) - Docker"
