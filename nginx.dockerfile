@@ -31,19 +31,23 @@ RUN     \
 &&      apt-get update \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends \
-            bash procps telnet iputils-ping build-essential libpcre3-dev zlib1g-dev libssl-dev git wget \
+            bash procps telnet iputils-ping build-essential libpcre3-dev zlib1g-dev libssl-dev git wget cmake \
 &&      NGINX_VERSION=$(nginx -v 2>&1 | sed 's/.*nginx\///; s/ .*//') \
 &&      cd /tmp \
 &&      wget "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" \
 &&      tar xzf "nginx-${NGINX_VERSION}.tar.gz" \
 &&      git clone --recursive https://github.com/google/ngx_brotli.git \
-&&      cd "nginx-${NGINX_VERSION}" \
+&&      cd ngx_brotli/deps/brotli \
+&&      mkdir out && cd out \
+&&      cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF .. \
+&&      cmake --build . --config Release --target brotlienc \
+&&      cd /tmp/nginx-${NGINX_VERSION} \
 &&      nginx -V 2>&1 | grep -o 'configure arguments: .*' | sed 's/configure arguments: //' > /tmp/nginx_args \
 &&      eval "./configure $(cat /tmp/nginx_args) --with-compat --add-dynamic-module=../ngx_brotli" \
 &&      make modules \
 &&      cp objs/ngx_http_brotli_*.so /etc/nginx/modules/ \
 &&      cd / && rm -rf /tmp/* \
-&&      apt-get purge -y build-essential libpcre3-dev zlib1g-dev libssl-dev git wget \
+&&      apt-get purge -y build-essential libpcre3-dev zlib1g-dev libssl-dev git wget cmake \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 &&      apt-get autoremove -y --purge \
 &&      rm -rf \
