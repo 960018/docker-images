@@ -1,4 +1,3 @@
-FROM    fholzer/nginx-brotli:mainline-latest AS brotli-nginx
 FROM    nginx:mainline-bookworm AS builder
 
 ARG     CACHE_BUSTER=default
@@ -14,8 +13,6 @@ COPY    global/compress  /etc/initramfs-tools/conf.d/compress
 COPY    global/modules   /etc/initramfs-tools/conf.d/modules
 COPY    global/90parallel   /etc/apt/apt.conf.d/90parallel
 
-COPY    --from=brotli-nginx /usr/lib/nginx/modules/ngx_http_brotli_*.so /etc/nginx/modules/
-
 USER    root
 
 RUN     \
@@ -27,12 +24,27 @@ RUN     \
 &&      groupmod -g 1000 vairogs \
 &&      mkdir --parents /home/vairogs \
 &&      mkdir --parents /etc/nginx/stream.d \
+&&      mkdir --parents /etc/nginx/modules \
 &&      echo >> /home/vairogs/.bashrc \
 &&      echo 'alias ll="ls -lahs"' >> /home/vairogs/.bashrc \
 &&      echo 'alias ll="ls -lahs"' >> /root/.bashrc \
 &&      apt-get update \
 &&      apt-get upgrade -y \
-&&      apt-get install -y --no-install-recommends bash procps telnet iputils-ping \
+&&      apt-get install -y --no-install-recommends \
+            bash procps telnet iputils-ping \
+            build-essential libpcre3-dev zlib1g-dev libssl-dev git wget \
+        NGINX_VERSION=$(nginx -v 2>&1 | sed 's/.*nginx\///; s/ .*//') \
+&&      cd /tmp \
+&&      wget "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" \
+&&      tar xzf "nginx-${NGINX_VERSION}.tar.gz" \
+&&      git clone --recursive https://github.com/google/ngx_brotli.git \
+&&      cd "nginx-${NGINX_VERSION}" \
+        nginx -V 2>&1 | grep -o 'configure arguments: .*' | sed 's/configure arguments: //' > /tmp/nginx_args \
+&&      eval "./configure $(cat /tmp/nginx_args) --with-compat --add-dynamic-module=../ngx_brotli" \
+&&      make modules \
+&&      cp objs/ngx_http_brotli_*.so /etc/nginx/modules/ \
+&&      cd / && rm -rf /tmp/* \
+        apt-get purge -y build-essential libpcre3-dev zlib1g-dev libssl-dev git wget \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 &&      apt-get autoremove -y --purge \
 &&      rm -rf \
@@ -51,9 +63,12 @@ RUN     \
 &&      chown -R vairogs:vairogs /var/log/nginx \
 &&      chown -R vairogs:vairogs /etc/nginx/conf.d \
 &&      chown -R vairogs:vairogs /etc/nginx/stream.d \
+&&      chown -R vairogs:vairogs /etc/nginx/modules \
 &&      touch /var/run/nginx.pid \
 &&      chown -R vairogs:vairogs /var/run/nginx.pid \
 &&      usermod -a -G dialout vairogs
+
+RUN     ls -la /etc/nginx/modules/
 
 COPY    nginx/nginx.conf /etc/nginx/nginx.conf
 
