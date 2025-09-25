@@ -65,6 +65,8 @@ RUN     \
         set -eux \
 &&      chmod +x /tmp/build-extensions.sh \
 &&      /tmp/build-extensions.sh \
+&&      curl -fsSL https://esbuild.github.io/dl/latest | sh \
+&&      mv esbuild /usr/local/bin/esbuild \
 &&      curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-${ARCH} \
 &&      chmod +x tailwindcss-linux-${ARCH} \
 &&      mv tailwindcss-macos-arm64 /usr/local/bin/tailwindcss \
