@@ -20,10 +20,10 @@ COPY    php/no-debian-php /etc/apt/preferences.d/no-debian-php
 COPY    php/source/          /usr/src/php
 
 COPY    php/docker/fpm/docker-php-entrypoint    /usr/local/bin/docker-php-entrypoint
-COPY    php/docker/docker-php-ext-configure /usr/local/bin/docker-php-ext-configure
-COPY    php/docker/docker-php-ext-enable    /usr/local/bin/docker-php-ext-enable
-COPY    php/docker/docker-php-ext-install   /usr/local/bin/docker-php-ext-install
-COPY    php/docker/docker-php-source        /usr/local/bin/docker-php-source
+COPY    php/docker/docker-php-ext-configure     /usr/local/bin/docker-php-ext-configure
+COPY    php/docker/docker-php-ext-enable        /usr/local/bin/docker-php-ext-enable
+COPY    php/docker/docker-php-ext-install       /usr/local/bin/docker-php-ext-install
+COPY    php/docker/docker-php-source            /usr/local/bin/docker-php-source
 
 STOPSIGNAL SIGQUIT
 
@@ -73,6 +73,7 @@ RUN     \
             --enable-intl \
             --enable-mbstring \
             --enable-option-checking=fatal \
+            --enable-pcntl \
             --enable-sysvsem \
             --enable-sysvshm \
             --enable-sysvmsg \

@@ -86,6 +86,7 @@ jobs:
                         ${{ env.OWNER }}/${{ env.PHP_NAME }}:${{ env.LATEST_TAG }}
                     build-args: |
                         CACHE_BUSTER=${{ github.run_id }}
+                        ARCH=arm64
             -   name: cleanup
                 run: |
                     ls -la ./
