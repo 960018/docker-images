@@ -69,7 +69,7 @@ RUN     \
 &&      mv esbuild /usr/local/bin/esbuild \
 &&      curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-${ARCH} \
 &&      chmod +x tailwindcss-linux-${ARCH} \
-&&      mv tailwindcss-macos-arm64 /usr/local/bin/tailwindcss \
+&&      mv tailwindcss-linux-${ARCH} /usr/local/bin/tailwindcss \
 &&      chmod -R 1777 /usr/local/bin \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false make libc-dev libc6-dev cpp gcc g++ autoconf dpkg-dev \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false zlib1g-dev libbrotli-dev libjpeg62-turbo-dev libpng-dev libwebp-dev libfreetype-dev libldap-dev \
