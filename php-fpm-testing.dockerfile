@@ -1,6 +1,7 @@
 FROM    ghcr.io/960018/php/fpm:latest AS builder
 
 ARG     CACHE_BUSTER=default
+ARG     ARCH
 
 USER    root
 
