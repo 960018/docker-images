@@ -31,6 +31,10 @@ RUN     \
         set -eux \
 &&      chmod +x /tmp/build-extensions.sh \
 &&      /tmp/build-extensions.sh \
+&&      curl -sLO https://github.com/biomejs/biome/releases/latest/download/biome-linux-${ARCH} \
+&&      chmod +x biome-linux-${ARCH} \
+&&      mv biome-linux-${ARCH} /usr/local/bin/biome \
+&&      chmod -R 1777 /usr/local/bin \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false make libc-dev libc6-dev cpp gcc g++ autoconf dpkg-dev fontconfig \
 &&      rm -rf \
             ~/.pearrc \
