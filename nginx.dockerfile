@@ -1,4 +1,4 @@
-FROM    nginx:mainline-bookworm AS builder
+FROM    nginx:mainline-trixie AS builder
 
 ARG     CACHE_BUSTER=default
 
