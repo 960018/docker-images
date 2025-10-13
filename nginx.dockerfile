@@ -31,7 +31,7 @@ RUN     \
 &&      apt-get update \
 &&      apt-get upgrade -y \
 &&      apt-get install -y --no-install-recommends \
-            bash procps telnet iputils-ping build-essential libpcre3-dev zlib1g-dev libssl-dev git wget cmake \
+            bash procps telnet iputils-ping build-essential libpcre2-dev zlib1g-dev libssl-dev git wget cmake \
 &&      NGINX_VERSION=$(nginx -v 2>&1 | sed 's/.*nginx\///; s/ .*//') \
 &&      cd /tmp \
 &&      wget "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" \
@@ -47,7 +47,7 @@ RUN     \
 &&      make modules \
 &&      cp objs/ngx_http_brotli_*.so /etc/nginx/modules/ \
 &&      cd / && rm -rf /tmp/* \
-&&      apt-get purge -y build-essential libpcre3-dev zlib1g-dev libssl-dev git wget cmake \
+&&      apt-get purge -y build-essential libpcre2-dev zlib1g-dev libssl-dev git wget cmake \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 &&      apt-get autoremove -y --purge \
 &&      rm -rf \
