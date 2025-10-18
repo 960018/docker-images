@@ -53,6 +53,7 @@ RUN     \
             /usr/share/man/* \
             /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini \
             /usr/local/etc/php/php.ini \
+            /usr/local/etc/php-fpm.d/www.conf \
 &&      mv /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 &&      chown -R vairogs:vairogs /home/vairogs \
 &&      echo 'alias upd="composer update -nW --ignore-platform-reqs"' >> /home/vairogs/.bashrc \
@@ -61,6 +62,7 @@ RUN     \
 &&      echo 'alias rem="composer remove -nW --ignore-platform-reqs"' >> /home/vairogs/.bashrc
 
 COPY    php/ini/opcache.no-jit.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+COPY    php/ini/fpm/www-dev.conf /usr/local/etc/php-fpm.d/www.conf
 
 WORKDIR /var/www/html
 
