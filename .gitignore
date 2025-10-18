@@ -1,2 +1,1 @@
-curl/*
-!curl/env_entrypoint.sh
+.build-temp
