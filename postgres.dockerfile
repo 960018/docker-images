@@ -2,6 +2,7 @@ ARG     VERSION
 
 FROM    postgres:${VERSION}-trixie
 
+ARG     VERSION
 ARG     CACHE_BUSTER=default
 
 LABEL   maintainer="support@vairogs.com"
@@ -58,6 +59,12 @@ COPY    --chmod=0755 postgres/pg_backup.config /backup/scripts/pg_backup.config
 COPY    --chmod=0755 postgres/pg_backup_rotated.sh /backup/scripts/pg_backup_rotated.sh
 COPY    --chmod=0755 postgres/init.sh /docker-entrypoint-initdb.d/init.sh
 COPY    --chmod=0755 postgres/custom_entrypoint.sh /usr/local/bin/custom_entrypoint.sh
+COPY    --chmod=0755 postgres/custom_entrypoint_18.sh /usr/local/bin/custom_entrypoint_18.sh
+
+RUN     \
+        if [ "${VERSION}" = "18" ]; then \
+            cp /usr/local/bin/custom_entrypoint_18.sh /usr/local/bin/custom_entrypoint.sh; \
+        fi
 COPY    --chmod=0755 postgres/install_extensions.sql /install_extensions.sql
 
 ENTRYPOINT ["/usr/local/bin/custom_entrypoint.sh"]

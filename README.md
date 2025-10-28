@@ -13,7 +13,7 @@ A collection of Docker images for various services and applications, built for a
 - **nginx**: Nginx web server
 - **node**: Node.js runtime environment
 - **php**: PHP environment with several variants (fpm, fpm-socket, fpm-testing, etc.)
-- **postgres**: PostgreSQL database (versions 13, 14, 15, 16, 17)
+- **postgres**: PostgreSQL database (versions 13, 14, 15, 16, 17, 18)
 - **scratch**: Minimal base image
 
 ## Usage
