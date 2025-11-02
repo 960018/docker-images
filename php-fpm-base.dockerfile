@@ -39,10 +39,10 @@ RUN     \
 &&      apt-get install -y --no-install-recommends --allow-downgrades bison re2c valgrind libxml2 libssl3t64 libsqlite3-0 libbz2-1.0 libidn2-0 gdb-minimal \
         zstd libbrotli1 libpsl5t64 libgsasl18 rtmpdump librtmp1 libnghttp3-9 nghttp2 libonig5 libpq5 libsodium23 libargon2-1 libtidy58 libfcgi-bin \
         libzip5 libgmp10 zlib1g libffi8 libssh2-1t64 libldap-common libldap-2.5-0 libldap2 libxslt1.1 libicu76 libvips42 libexif12 libheif1 \
-        libsharpyuv0 \
+        libsharpyuv0 liblzma5 \
 &&      apt-get install -y --no-install-recommends --allow-downgrades libxml2-dev libssl-dev libsqlite3-dev libbz2-dev libidn2-dev libzstd-dev \
         libbrotli-dev libpsl-dev libgsasl-dev librtmp-dev libnghttp2-dev libnghttp3-dev libonig-dev libpq-dev libsodium-dev libargon2-dev libtidy-dev \
-        libzip-dev libgmp-dev zlib1g-dev libffi-dev libssh2-1-dev libldap-dev libxslt1-dev libicu-dev libexif-dev libheif-dev \
+        libzip-dev libgmp-dev zlib1g-dev libffi-dev libssh2-1-dev libldap-dev libxslt1-dev libicu-dev libexif-dev libheif-dev liblzma-dev \
 &&      chmod -R 1777 /usr/local/bin \
 &&      mkdir --parents "$PHP_INI_DIR/conf.d" \
 &&      [ ! -d /var/www/html ]; \
@@ -98,6 +98,7 @@ RUN     \
             --with-tidy \
             --with-valgrind \
             --with-xsl \
+            --with-zlib \
             --without-readline \
 &&      make -j"$jobs" \
 &&      find -type f -name '*.a' -delete \
@@ -120,7 +121,7 @@ RUN     \
 &&      chown www-data:www-data /usr/local/bin/php-fpm-healthcheck \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false make libc-dev libc6-dev cpp gcc g++ autoconf dpkg-dev \
 &&      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false libxml2-dev libssl-dev libsqlite3-dev libbz2-dev libidn2-dev \
-        libzstd-dev libbrotli-dev libpsl-dev libgsasl-dev librtmp-dev libnghttp2-dev libnghttp3-dev libonig-dev libpq-dev libsodium-dev \
+        libzstd-dev libbrotli-dev libpsl-dev libgsasl-dev librtmp-dev libnghttp2-dev libnghttp3-dev libonig-dev libpq-dev libsodium-dev liblzma-dev \
         libargon2-dev libtidy-dev libzip-dev libgmp-dev zlib1g-dev libffi-dev libssh2-1-dev libldap-dev libxslt1-dev libicu-dev libexif-dev libheif-dev \
 &&      echo "/usr/local/lib" > /etc/ld.so.conf.d/local-lib.conf \
 &&      ldconfig \
