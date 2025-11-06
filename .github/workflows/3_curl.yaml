@@ -28,10 +28,10 @@ jobs:
                 uses: docker/setup-buildx-action@v3
                 with:
                     driver-opts: image=moby/buildkit:master-rootless
-            -  name: dependencies
-               run: |
-                   docker pull ghcr.io/960018/scratch:latest
-                   docker pull ghcr.io/960018/debian:latest
+            -   name: dependencies
+                run: |
+                    docker pull ghcr.io/960018/scratch:latest
+                    docker pull ghcr.io/960018/debian:latest
             -   name: mkdir
                 run: |
                     mkdir -m 755 --parents curl
@@ -48,7 +48,7 @@ jobs:
                     clone_repo https://github.com/curl/curl.git source
                     clone_repo https://github.com/ngtcp2/nghttp3.git nghttp3
                     clone_repo https://github.com/ngtcp2/ngtcp2.git ngtcp2
-                    clone_repo https://github.com/960018/wolfssl.git wolfssl
+                    clone_repo https://github.com/wolfSSL/wolfssl.git wolfssl
             -   name: build curl
                 uses: docker/build-push-action@v6
                 with:
